@@ -1,4 +1,4 @@
-# MRTR - Multi-user Rich Text Realms
+# MTR - Multi-user (rich)Text Realms
 
 ## Why do this, whatever it is?
 

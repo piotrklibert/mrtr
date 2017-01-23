@@ -1,0 +1,21 @@
+
+#+BEGIN_SRC dot :file dot_success.png :cmdline -Kdot -Tpng
+  digraph {
+  // graph from left to right
+  rankdir=LR;
+  splines=true;
+  node [shape=box];
+
+  obj [label="WorldObject"]
+  room [label="Room"]
+  cont [label="Container"]
+  player [label="Player"]
+
+  obj -> cont
+  cont -> room
+  cont -> player
+  }
+#+END_SRC
+
+#+RESULTS:
+[[file:dot_success.png]]

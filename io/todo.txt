@@ -1,0 +1,12 @@
+- items (ob cmd) - done
+- events (timers) - mostly done
+- network connectivity (telnet-like) - zdecydowanie done
+- git integration - na pozniej... duzo pozniej
+
+- !! player destruction
+- autoreloading
+
+
+- WeakLink in registries - done
+- potencjal dla makr
+- better booleans
