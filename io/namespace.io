@@ -38,6 +38,7 @@ Namespace do(
             "+#{attrName} " interpolate print
             self getSlot(attrName) ?setFile(File with(file))
             self getSlot(attrName) ?setName(attrName)
+            self getSlot(attrName) ?setIsClass(attrName at(0) isUppercase)
             Lobby setSlot(attrName, self getSlot(attrName))
         )
         diff updated foreach(attrName,
@@ -49,7 +50,7 @@ Namespace do(
             if(Lobby getSlot(attrName) isKindOf(WorldObject),
                 oldVal := Lobby getSlot(attrName)
                 newVal := self getSlot(attrName)
-                newVal setEnviron(oldVal environ)
+                newVal setEnv(oldVal environ)
                 newVal setRegistry(oldVal registry)
                 if(oldVal isKindOf(Container),
                     oldVal inventory foreach(

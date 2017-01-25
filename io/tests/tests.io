@@ -22,6 +22,6 @@ assert(foo attr == "z")
 a := WorldObject clone
 b := WorldObject clone
 
-assert(a environ == nil)
-a setEnviron("ok")
-assert(a environ == "ok")
+assert(a env == nil)
+a setEnv("ok")
+assert(a env == "ok")

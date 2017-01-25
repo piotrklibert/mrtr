@@ -19,6 +19,7 @@ Namespace do(
 
 
 Namespace do(
+    loadStd("description.io")
     loadStd("object.io")
     loadStd("container.io")
     loadStd("room.io")

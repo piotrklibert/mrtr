@@ -1,12 +1,31 @@
-- items (ob cmd) - done
-- events (timers) - mostly done
-- network connectivity (telnet-like) - zdecydowanie done
-- git integration - na pozniej... duzo pozniej
-
+BACKEND:
 - !! player destruction
+- w nazwach klas pelne sciezki do plikow
+- help i docstringi
+- obiekt z Description jako lista sekcji
+- notka na bloga
+- uporzadkowac repo
+- opcje: krotkie +/-; szerokosc
+- lepsze parsowanie komend
+- wez i odloz
+- object/description formatting
+- poruszanie - refactor
+- uprawnienia
+- odmiany - plec, przypadki, https://pl.wiktionary.org/wiki/zielony
+- shortName: przym. przym. rzecz.
+- network connectivity - custom protocol
 - autoreloading
 
-
-- WeakLink in registries - done
+- git integration
 - potencjal dla makr
 - better booleans
+
+- network connectivity (telnet-like) - zdecydowanie done
+- items (ob cmd) - done
+- events (timers) - done
+- WeakLink in registries - done
+
+
+FRONTEND:
+- telnet/Mush
+- custom app

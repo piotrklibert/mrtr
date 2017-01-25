@@ -2,25 +2,32 @@ Room := Container inherit
 Room appendProto(CommandSet)
 
 Room do(
+    defattr(exitsDesc, "Dostrzegasz wyjscia na: ")
     defattr(exits, list())
     defattr(items, list())
     defattr(events, list())
     defattr(eventRunner, nil)
     defattr(shortName, "<shortName not set>")
 
+    containerDesc := "Znajduja sie tutaj: "
+
     asString := method(
         "<Room: " ..  self file name  .. ">"
     )
 
-    desc := method(
-        d := resend
-        res := ("===> " .. self file name .. "\n")
-        res := res .. ("===] " .. ColorMgr colorizedString("red", shortName) .. "\n")
-        res := res .. d .. "\n"
-        res := res .. "Dostrzegasz wyjscia na: " .. self exits fmt
-        res
+    getExitsDisplay := method(
+        self exitsDesc .. self exits fmt
     )
-    containerDesc := "Znajduja sie tutaj: "
+
+    desc := method(
+        superDesc := resend
+        fname := $"[#{self file name}]"
+        list(
+            $"===] #{shortName} #{fname}",
+            superDesc,
+            self getExitsDisplay
+        ) join("\n")
+    )
 
     addItem := method(aName, aDescription,
         self items append(Map clone with(
@@ -51,7 +58,7 @@ Room do(
     )
 
     addExit := method(dir, file,
-        writeln("Adding exit #{dir} to #{file}" interpolate)
+        writeln($"Adding exit #{dir} to #{file}")
         self exits append(dir)
         target := call target
         action := block(cmd, actor,
@@ -64,7 +71,9 @@ Room do(
                 actor moveTo(room)
                 actor out writeln(room desc)
             )
-            actor out writeln(ex asString)
+            ex catch(
+                actor out writeln(ex asString)
+            )
         )
         action fname := file
         defcommand(

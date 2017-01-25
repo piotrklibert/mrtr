@@ -3,17 +3,19 @@ room1 := Room makeNew
 room1 do(
     setShortName("Komorka na miotly.")
     baseDesc := "
-        Na kazdej plaskiej powierzchni zalegl gruba na palec warstwa gesty kurz.
-        Pod scianami widac wysokie, choc waskie zaledwie na dwie stopy, metalowe
-        szafki. Drzwiczki kazdej z nich zamkniete sa na klodke, kazda innego
-        rodzaju. Migotliwe swiatlo zapewnia kilka imitacji oliwnych lampek
-        rozwieszonych pod sufitem. Na wschodniej scianie znajduja sie drzwi,
-        ktore prowadza do glownego holu. W najdalszym od wejscia zakatku,
-        wcisniete miedzy szafki, widoczne jest wejscie do jakiegos tunelu...
+        Na kazdej plaskiej w tym pomieszczeniu powierzchni zalegl gruba na palec
+        warstwa gesty kurz. Pod scianami widac wysokie i bardzo waskie metalowe
+        szafki. Wiekszosc polek jest pusta i pokryta kurzem, jednak niektore
+        szafki maja drzwiczki, zamkniete szczelnie i zablokowane klodkami. Nie
+        ma tu okien ani widocznych zrodel swiatla, jedyne oswietlenie wpada przez
+        drzwi wiodace na wschod, do glownego holu. W najdalszym od wejscia zakatku,
+        wcisniete miedzy szafki na wysokosci podlogi, widoczne jest wejscie do
+        jakiegos tunelu.
     " dedent
 
     addItem("tunel", "
-        Ciemna dziura w scianie. Gdzies w glebi tunelu dostrzegasz swiatlo.
+        Ciemna dziura w scianie na wysokosci podlogi, prawdopodobnie dosc duza,
+        by sie przez nia przecisnac. Gdzies w glebi tunelu dostrzegasz swiatlo.
     " dedent)
 
     addEvent(145, "

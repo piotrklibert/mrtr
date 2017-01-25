@@ -1,16 +1,32 @@
 tunel1 := Room makeNew
 
 tunel1 do(
-	setShortName("W tunelu.")
+	setShortName("Niski i waski tunel.")
+
     baseDesc := "
-        Wyciosane wejscie w niezbyt dobrze oswietlony korytarz.
+        Rozmiary tego przejscia - tunelu o przekroju kwadratu i scianach
+        wykonanych z metalowych placht laczonych nitami - sprawiaja, ze trzeba
+        sie niemal czolgac by sie przezen przedostac. Podloga opada pod ostrym
+        katem w kierunku polnocnym, a kilka metrow dalej na polnoc tunel zaczyna
+        sie rozszerzac, a mrok przejasniac. W przeciwnym kierunku tunel wiedzie
+         stromo pod gore i w ciemnosc.
     " dedent
 
-    
+
     addEvent(45, "
-        Gdzies w oddali slychac metaliczne pobrzekiwanie.
+        Przez sciany tunelu przebiega drzenie, akompaniowane przez gluchy
+        metaliczny zgrzyt.
     " dedent)
-    
+
+    addEvent(45, "
+        Czyms poruszone powietrze owiewa cie lagodnie przez kilka chwil
+        kierujac sie na polnoc.
+    " dedent)
+
+    addEvent(45, "
+        Swiatlo poza wyjsciem z tunelu przygasa i migocze przez moment. Czyzby
+        problemy z zasilaniem?
+    " dedent)
 
     addExit("tunel", "room1.io")
     addExit("n", "tunel2.io")

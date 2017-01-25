@@ -1,4 +1,23 @@
+Sequence stripped := method(
+    self asMutable performWithArgList(call evalArgs)
+)
+
+Object ident := method(x, x)
+
+Object $ := method(
+    int := "interpolate" asMessage
+    call evalArgs map(str,
+        ctx := call sender clone
+        ctx appendProto(thisContext)
+        msg := message(ident(str interpolate)) clone
+        call sender doMessage(msg, ctx)
+    ) join
+)
+Object $$ := Object getSlot("$")
+OperatorTable addOperator("$", 13)
+
 List removeBySel := method(
+    # TODO: probably very inefficient
     msg := call argAt(0)
     toBeRemoved := list()
     self foreach(x,
@@ -20,6 +39,7 @@ Object assert := method(
         assertionerror raise("Expected true, got #{arg} from '#{call argAt(0)}'" interpolate)
     )
 )
+
 Object ifTrueEval := method(if(self asBoolean, call evalArgAt(0)))
 Object ifFalseEval := method(if(self not, call evalArgAt(0)))
 

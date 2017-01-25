@@ -3,10 +3,9 @@ heartbeat := Object clone do(
 
     singleStep := method(
         self counter := self counter + 1
-        "." print
         if(self counter > 9,
             self counter := 0
-            writeln)
+        )
     )
 
     start := method(

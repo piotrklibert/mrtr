@@ -1,11 +1,7 @@
 BaseWriter := Object clone do(
     defattr(file, nil)
 
-    forSocket := method(aSocket,
-        w := BaseWriter clone
-        w setFile(aSocket)
-        w
-    )
+
     colorWrite := method(
         args := call evalArgs
         color := args at(0)
@@ -27,6 +23,15 @@ BaseWriter := Object clone do(
         self performWithArgList("write", call evalArgs)
         self write("\n")
     )
+)
+
+SocketWriter := BaseWriter clone do(
+    withSocket := method(aSocket,
+        w := BaseWriter clone
+        w setFile(aSocket)
+        w
+    )
+    with := getSlot("withSocket")
 )
 
 StdOut := BaseWriter clone do(

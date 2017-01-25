@@ -1,15 +1,34 @@
 WorldObject := Object clone
 
 WorldObject do(
-    defattr(environ, nil)
+    defattr(isClass, nil)
+    defattr(registry, list())
+
     defattr(out, StdOut)
+    defattr(description, Description clone)
+
+    defattr(env, nil)
     defattr(comingFrom, nil)
     defattr(goingTo, nil)
 
     # set by the Namespace loader
     defattr(name, nil)
     defattr(file, nil)
-    baseDesc := "A basic object without any features."
+
+
+    defdesc := method(aChunkOrder, chunks)
+
+
+
+    baseDesc := Description compose(
+        addSection("baseDesc", "
+            Surowy obiekt: unoszaca sie w przestrzeni sfera czegos, co wymyka
+            sie wszelkiemu opisowi. Ksztalty i kolory przedmiotu zmieniaja sie
+            jak w kalejdoskopie, a kazda kombinacja jest jak maly test
+            Rorschacha. Masz wrazenie, ze lepiej nie wpatrywac sie wen zbyt
+            dlugo.
+        " dedent)
+    )
 
     id := method(asString)
     desc := method(
@@ -17,23 +36,24 @@ WorldObject do(
     )
     asString := method("<#{self type}: #{self name}>" interpolate)
 
-    registry := method(self initRegistry; self _registry)
-    setRegistry := method(val, self _registry := val)
-    initRegistry := method(
-        if(self hasLocalSlot("_registry") not,
-            self _registry := list())
+    destroy := method(
+        self env ?rm(self)
+        self setEnv(nil)
+        if(self registry size > 0, self registry foreach(link ?destroy))
     )
 
-    notifyGone := method(what,
-        /* do nothing by default */
-        self
-    )
+    # callbacks called when an object appears/disappears in current
+    # environment
+    notifyGone    := method(what, self)
+    notifyArrived := method(what, self)
 
-    notifyArrived := method(what,
-        /* do nothing by default */
-        self
-    )
 
+    class := method(
+        if(self isClass or (self == WorldObject),
+            self,
+            self proto class
+        )
+    )
 
     inherit := method(
         aClone := self clone
@@ -49,7 +69,7 @@ WorldObject do(
             name := self name asLowercase .. (self registry size + 1) asString
         )
         aClone name := name
-        self registry append(WeakLink clone setLink(aClone))
+        self class registry append(WeakLink clone setLink(aClone))
         aClone
     )
 
@@ -69,7 +89,7 @@ WorldObject do(
 
     find := method(what,
         found := false
-        inEnv := self environ inventory select(name == what)
+        inEnv := self env inventory select(name == what)
         inInv := self inventory select(name == what)
         inEnv clone appendSeq(inInv)
     )

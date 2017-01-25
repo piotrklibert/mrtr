@@ -3,18 +3,17 @@ BaseCommandHandler := Object clone do(
     defattr(commands, nil, globalCommands)
     defattr(player, nil, playerObject)
 
-    makeNew := method(
-        cmdHandler := self clone
-        cmdHandler doMessage(call argAt(0), call sender)
-        cmdHandler
+
+    destroy := method(
+        self player destroy
     )
 
-    asString := method("[commands=#{commands};player=#{player}]" interpolate)
+    asString := method($"[commands=#{commands};player=#{player}]")
 
     commandSets := method(
         p := self player
         list(
-            p, p inventory, p environ, p environ inventory, self commands
+            p, p inventory, p env, p env inventory, self commands
         ) flatten unique select(isKindOf(CommandSet))
     )
 
@@ -54,7 +53,7 @@ BaseCommandHandler := Object clone do(
 RemotePlayerHandler := BaseCommandHandler clone do(
     with := method(aSocket, name,
         player := Player makeNew(name) lexicalDo(
-            setSocket(aSocket)
+            setOut(SocketWriter withSocket(aSocket))
             moveTo(mainHall)
         )
         c := self clone

@@ -1,9 +1,12 @@
-Commands := CommandSet clone
-
-# Commands clone := method(Commands)
-Commands asString := method("<Commands: [" .. self slotNames .. "]>" )
+Commands := CommandSet clone do(
+    asString := method($"<Commands: [#{self slotNames fmt}]>")
+)
 
 Commands do(
+    defcmd(destroy, beginsWithSeq("destroy"),
+        arg := line split at(1)
+        actor findNearby(arg) destroy
+    )
     defcmd(cat, beginsWithSeq("cat"),
         arg := line split at(1)
         Paths currentDir fileNamed(arg) readLines foreach(x,
@@ -21,17 +24,6 @@ Commands do(
         self playerObject moveTo(WorldObject registryFind(where))
     )
 
-    defcmd(say, beginsWithSeq("'"),
-        line := line asMutable removePrefix("'")
-        actor out writeln("Mowisz: ", line)
-
-        actor environ inventory select(x,
-            x isKindOf(Player) and (x != actor)
-        ) foreach(
-            out writeln(actor name, " mowi: ", line)
-        )
-    )
-
     defcmd(move, beginsWithSeq("move"),
         args := line split slice(1)
         what := actor find(args at(0)) first
@@ -41,15 +33,20 @@ Commands do(
 
     defcmd(ob, beginsWithSeq("ob"),
         what := line split slice(1) at(0)
-        env := actor environ
-        desc := (env inventory clone appendSeq(env items))  select(name asLowercase == what) first ?desc
+        desc := actor findNearby(what) ?desc
+        desc ifNil(
+            desc := actor env items select(name == what) first ?desc
+        )
         actor out writeln(desc ifNilEval("Obejrzyj co?"))
     )
 
     defcmd(cloneObj, beginsWithSeq("clone"),
         what := line split at(1)
-        cls := WorldObject registry select(name asLowercase == what asLowercase) first
-        cls makeNew moveTo(actor environ)
+        cls := WorldObject registry map(link) select(file baseName  == what) first
+        cls ifNil(
+            cls := actor findNearby(what)
+        )
+        cls makeNew moveTo(actor env)
     )
     defcmd(bang, beginsWithSeq("!"),
         ex := try(

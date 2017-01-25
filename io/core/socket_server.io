@@ -11,10 +11,11 @@ BaseConnectionHandler := Object clone do(
 
     handleConnect := method()
     handleLine    := method()
-    handleClose   := method("[Closed #{self socket host}]" println)
+    handleClose   := method($$("[Closed #{self socket host}]") println)
     handleNetworkError   := method(err,
         if(err message == "Timeout",
-            "X" print; "continue" asMessage ,
+            "continue" asMessage
+        ,
             msg println; "break" asMessage
         )
     )
@@ -69,14 +70,17 @@ ConnectionHandler := BaseConnectionHandler clone do(
     handleConnect := method(
         self socket write("Your name? ")
         name := self socket readUntilSeq("\r\n")
-        self setPlayerHandler(
-            RemotePlayerHandler with(self socket, name)
-        )
-        self playerHandler player sp
+        self setPlayerHandler(RemotePlayerHandler with(self socket, name))
+        self playerHandler doCommand("sp")
     )
 
     handleLine := method(aLine,
         self playerHandler doCommand(aLine)
+    )
+
+    handleClose := method(
+        self playerHandler destroy
+        resend
     )
 )
 
@@ -84,5 +88,8 @@ ConnectionHandler := BaseConnectionHandler clone do(
 MTRServer := Server clone do(
     setPort(8500)
     start := method(write("[Starting MTRServer on port 8500]\n"); resend)
-    handleSocket := method(aSocket, ConnectionHandler with(aSocket) @start)
+
+    handleSocket := method(aSocket,
+        ConnectionHandler with(aSocket) @start
+    )
 )

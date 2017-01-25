@@ -1,6 +1,8 @@
 mainHall := Room makeNew
 
 mainHall do(
+    setShortName("Sala glowna.")
+
     baseDesc := "
         Wielki Hol Glowny zostal zbudowany w swojej obecnej formie prawie
         na pewno wylacznie po to, by zaspokoic czyjas megalomanie. Dluga na

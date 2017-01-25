@@ -6,11 +6,11 @@ tunel2 do(
         Wyciosany w skale korytarz.
     " dedent
 
-    
+
     addEvent(45, "
         Niedaleko slychac metaliczne pobrzekiwanie.
     " dedent)
-    
+
 
     addExit("s", "tunel1.io")
     addExit("n", "grota.io")
