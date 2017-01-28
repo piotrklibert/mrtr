@@ -1,5 +1,33 @@
+File relPath := method(
+    self path asMutable removePrefix(System launchPath) strip("/")
+)
+File worldRelPath := method(
+    self path asMutable removePrefix(System launchPath) strip("/") removePrefix("world/")
+)
+
+Object squareBrackets := method(
+    Object performWithArgList("list", call evalArgs)
+)
+
+
+Object defdesc := method(
+    msg := call argAt(0)
+    ctx := call sender
+    desc := Description clone
+    desc doMessage(msg, ctx)
+    ctx setDescriptionFormatter(desc)
+    desc
+)
+
 Sequence stripped := method(
     self asMutable performWithArgList(call evalArgs)
+)
+
+Sequence dedentIfNeeded := method(
+    lines := self split("\n")
+    if(lines size == 1, return self)
+    if(lines size > 1 and (lines at(0) size == 0), return self dedent)
+    return self
 )
 
 Object ident := method(x, x)
@@ -124,6 +152,8 @@ Regex matches := method(str,
 Sequence dedent := method(ignoreFirstLine,
     if(ignoreFirstLine isNil, ignoreFirstLine := true) # the default
     lines := self split("\n")
+    if(lines size == 0, return "")
+    if(lines size == 1, return self)
     if(ignoreFirstLine, lines := lines slice(1))
     indent := "^ +" asRegex matchesIn(lines at(0)) at(0) sizeInChars
     lines := lines map(exSlice(indent))
@@ -147,6 +177,7 @@ Sequence wrap := method(lineLength,
     if(curLine size > 0,
         lines append(curLine))
     lines join("\n")
+    self
 )
 
 
@@ -158,11 +189,11 @@ List fmt := method(
         return "")
 
     els := self slice(1)
-    s := self at(0) asMutable
+    s := self at(0) asString  asMutable
     els foreach(el,
         s appendSeq(", " .. el)
     )
-    s
+    s asString
 
 )
 

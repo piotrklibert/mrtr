@@ -1,17 +1,16 @@
 grota := Room makeNew
 
 grota do(
-    setShortName("Grota.")
-    baseDesc := "
-        Duza grota o wysokim sklepieniu, tworzaca centralna sale kompleksu tuneli podmiejskich. Jej dosc dobrze oswietlone wnetrze ukazuje wykute w skale pomieszczenia, przeznaczone na rzecz lokalnego handlu.
-    " dedent
+    setShort("Grota.")
+    setLong("
+        Rozlegla kamienna grota o podswietlonym sklepieniu rzezbionym w fantazyjne
+        wzory, jakie powstac mogly wylacznie dzieki niewatpliwemu szalenstwu 
+        artysty. W glebi groty wykuto pomieszczenia uzytkowe lokalnego handlu.
+    " dedent)
 
-    addEvent(45, "
-        Z zachodu dobiegaja odglosy obrabiania metalu.
-    " dedent)
-    addEvent(45, "
-        Dobiega cie glos sprzedawcy zachwalajacego swoje towary.
-    " dedent)
+
+    addEvent(45, "Z zachodu dobiegaja odglosy obrabiania metalu.")
+    addEvent(45, "Dobiega cie glos sprzedawcy zachwalajacego swoje towary.")
 
 
     addExit("e", "zegarmistrz.io")

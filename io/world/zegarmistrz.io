@@ -1,11 +1,13 @@
 zegarmistrz := Room makeNew
 
 zegarmistrz do(
-    setShortName("Zegarmistrz.")
-    baseDesc := "
+    setShort("Zegarmistrz.")
+    setLong("
         Szyld nad wejsciem glosi: 'Ku-Ku. Krasnoludzka Precyzja od 147 lat.'
-        Otacza sie miarowe cykanie kilkudziesieciu zegarow, zbieranych i odrestaurowywanych przez bardzo cierpliwych ludzi przez lata.
-    " dedent
+        Zewszad dochodzi miarowe cykanie wypelniajacych sciany starych zegarow.
+        Ich stan swiadczy o pasji, ktorej bardzo cierpliwi ludzie poswiecali sie 
+        przez lata.
+    " dedent)
 
     addEvent(25, "
         Cyk... cyk... cyk...

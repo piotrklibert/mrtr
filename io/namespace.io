@@ -11,7 +11,7 @@ Namespace do(
         loadFile(file)
     )
     loadFile := method(file,
-        "Reading file #{file}: " interpolate print
+        # "Reading file #{file}: " interpolate print
         ns := if(self == Namespace, Namespace clone, self)
         self file := file
         Namespace currentlyLoadingFile := file
@@ -50,7 +50,7 @@ Namespace do(
             if(Lobby getSlot(attrName) isKindOf(WorldObject),
                 oldVal := Lobby getSlot(attrName)
                 newVal := self getSlot(attrName)
-                newVal setEnv(oldVal environ)
+                newVal setEnv(oldVal env)
                 newVal setRegistry(oldVal registry)
                 if(oldVal isKindOf(Container),
                     oldVal inventory foreach(
@@ -60,7 +60,7 @@ Namespace do(
             )
             Lobby getSlot(attrName) become(self getSlot(attrName))
         )
-        if(diff isEmpty not, writeln)
+        if(diff updated size > 0, writeln)
         Lobby getSlot(diff new firstOr(diff updated first))
     )
 )

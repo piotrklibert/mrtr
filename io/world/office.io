@@ -1,30 +1,28 @@
 office := Room makeNew
 
 office do(
-    baseDesc := "
-        To jest jakies biuro. Wyglada bardziej na komorke na miotly, ale ma
-        kawalek okna.
-    " dedent
+    setShort("Kantor.")
+    setLong("
+        To jasne pomieszczenie zostalo bardzo dokladnie przystosowane do 
+        przetrzymywania sporej ilosci gotowki. Przez przezroczysta sciane z magicznego 
+        szkla, dla bezpieczenstwa wzmocniona mithrylowymi pretami, widac ogromne,
+        metalowe drzwi do skarbca. Jedyny kontakt z eleganckim mezczyzna po drugiej 
+        stronie sciany mozliwy jest przez niewielkie okienko z szufladka do podawania
+        pieniedzy.
+    " dedent)
 
 
-    addItem("okno", "
-        Okno to troche za duzo powiedziane: dziura w murze, przeslonieta
-        cienka, zachlapana blotem tektura. Przez brud i syf nie sposob nic
-        zobaczyc.
+    addItem("okienko", "
+        Przeszklone, nieskazitelnie czyste okienko kantoru. Mala szufladka umozliwia
+        przekazanie pieniedzy do wymiany.
     " dedent)
 
 
     addEvent(45, "
-        Po drewnianej podlodze przemknal cien, wielkosci dloni i dosc wlochaty.
-        To mogl byc szczur, ale szczury zazwyczaj nie maja az tylu nog...
+        Stojacy nieopodal mezczyzna wczytuje sie w ulotke z napisem: DOBRY KREDYT!
     " dedent)
     addEvent(30, "
-        Cos uderzylo w tekture okna od zewnatrz, wydajac z siebie
-        przerazliwy pisk. Pisk urywa sie nagle.
-    " dedent)
-    addEvent(30, "
-        Grupka ludzi przechodzi w pospiechu przez glowny hol, mijajac drzwi
-        do pokoju.
+        Grupka ludzi przechodzi w pospiechu przez drzwi wejsciowe.
     " dedent)
 
 

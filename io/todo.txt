@@ -1,15 +1,10 @@
 BACKEND:
-- !! player destruction
 - w nazwach klas pelne sciezki do plikow
 - help i docstringi
-- obiekt z Description jako lista sekcji
 - notka na bloga
 - uporzadkowac repo
 - opcje: krotkie +/-; szerokosc
 - lepsze parsowanie komend
-- wez i odloz
-- object/description formatting
-- poruszanie - refactor
 - uprawnienia
 - odmiany - plec, przypadki, https://pl.wiktionary.org/wiki/zielony
 - shortName: przym. przym. rzecz.
@@ -20,6 +15,11 @@ BACKEND:
 - potencjal dla makr
 - better booleans
 
+- poruszanie - refactor - done
+- object/description formatting - done
+- wez i odloz - done
+- obiekt z Description jako lista sekcji - done
+- !! player/object destruction -done
 - network connectivity (telnet-like) - zdecydowanie done
 - items (ob cmd) - done
 - events (timers) - done

@@ -1,10 +1,10 @@
 tunel2 := Room makeNew
 
 tunel2 do(
-	setShortName("W tunelu.")
-    baseDesc := "
-        Wyciosany w skale korytarz.
-    " dedent
+	setShort("W tunelu.")
+    setLong("
+    	Przejscie w kierunku polnocnym jest wyraznie wieksze.
+    	Droga na poludnie pograzona jest w mroku.")
 
 
     addEvent(45, "

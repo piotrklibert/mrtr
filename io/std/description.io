@@ -1,39 +1,60 @@
-Chunk := Object clone do(
-
-)
+Sequence asDescription := method(Description withString(self))
 
 Description := Object clone do(
     defattr(chunks, Map clone)
-    defattr(order, list("baseDesc"))
+    defattr(order, list())
+    defattr(object, nil)
+    defattr(player, nil)
+
 
     asString := method(
-        self order map(x, self chunks at(x) asString) join("\n")
+        width := self player ?options width
+        res := []
+        self order foreach(x,
+            desc := self object perform(self chunks at(x), self player, self)
+            if(desc,
+                res append(if(width, desc wrap(width), desc))
+            ,
+                writeln($"Chunk '#{x}' of #{self object} returned nil or false.")
+            )
+        )
+        res join("\n")
     )
 
-    compose := method(
+    addSection := method(name, optionalSelector,
+        arg1 := optionalSelector
+        arg1 ifNil(arg1 := name)
+        self order append(name)
+        self chunks atPut(name, arg1)
+        self setSlot(
+            name, method(self object doMessage(call message))
+        )
+    )
+
+    withString := method(aString,
         c := self clone
-        arg := call argAt(0)
-        c doMessage(arg, call sender)
+        c setObject(aString)
+        c addSection("1", "yourself")
         c
     )
 
-    addSection := method(name,# aValue,
-        if(call argAt(1) name beginsWithSeq("\""),
-            strval := call evalArgAt(1)
+    forPlayer := method(obj,
+        c := self clone
+        self slotNames select(beginsWithSeq("_")) foreach(name,
+            c setSlot(name, self getSlot(name))
         )
-        self order append(name)
-        self chunks atPut(name, strval)
+        c setPlayer(obj)
+        c
     )
-)
 
-Description compose(
-    addSection("baseDesc", "asdasdadsasd\nde242424")
-    addSection("contDesc", "asdasda';';';dsasd\nde242424")
-    addSection("blahDesc", "asd123134134asdadsasd\nde242424")
-) asString println
+    forObject := method(obj,
+        c := self clone
+        self slotNames select(beginsWithSeq("_")) foreach(name,
+            c setSlot(name, self getSlot(name))
+        )
+        c setObject(obj)
+        c
+    )
 
 
-Sequence asDescription := method(Description with(list(self)))
-List asDescription := method(
-    desc := Description clone
 )

@@ -1,16 +1,16 @@
 tunel1 := Room makeNew
 
 tunel1 do(
-	setShortName("Niski i waski tunel.")
+	setShort("Niski i waski tunel.")
 
-    baseDesc := "
+    setLong("
         Rozmiary tego przejscia - tunelu o przekroju kwadratu i scianach
         wykonanych z metalowych placht laczonych nitami - sprawiaja, ze trzeba
         sie niemal czolgac by sie przezen przedostac. Podloga opada pod ostrym
         katem w kierunku polnocnym, a kilka metrow dalej na polnoc tunel zaczyna
         sie rozszerzac, a mrok przejasniac. W przeciwnym kierunku tunel wiedzie
          stromo pod gore i w ciemnosc.
-    " dedent
+    " dedent)
 
 
     addEvent(45, "

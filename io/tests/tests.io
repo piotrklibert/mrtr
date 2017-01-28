@@ -23,5 +23,6 @@ a := WorldObject clone
 b := WorldObject clone
 
 assert(a env == nil)
+
 a setEnv("ok")
 assert(a env == "ok")

@@ -28,11 +28,18 @@ CommandSet := Object clone do(
         defcommand(name, predMsg, meth)
     )
 
+    runPredicate := method(cmdline, pred,
+        if(pred isKindOf(Message),
+            cmdline doMessage(pred),
+            pred call(cmdline)
+        )
+    )
+
     getCmdHandler := method(cmdline,
         action := nil
         self getCmdList foreach(val,
             pred := val at(0)
-            res := cmdline doMessage(pred)
+            res := runPredicate(cmdline, pred)
             if(res,
                 # "Handler found: '#{val at(1)}' for command '#{cmdline}' in #{self getSlot(\"name\") ifNilEval(self type)}" interpolate println
                 action := val at(1)

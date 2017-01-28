@@ -1,3 +1,23 @@
+Registry := List clone do(
+    registryFindAll := method(name,
+        res := list()
+        self registry map(link) foreach(cls,
+            cls registry map(link) foreach(obj,
+                if(obj name == name, res append(obj))
+            )
+        )
+        res
+    )
+
+    registryFind := method(name,
+        self registryFindAll(name) first
+    )
+
+    findRoom := method(path,
+        Room registry detect(link ?file path == path)
+    )
+)
+
 WorldObject := Object clone
 
 WorldObject do(
@@ -5,7 +25,7 @@ WorldObject do(
     defattr(registry, list())
 
     defattr(out, StdOut)
-    defattr(description, Description clone)
+    descriptionFormatter ::= nil
 
     defattr(env, nil)
     defattr(comingFrom, nil)
@@ -15,38 +35,44 @@ WorldObject do(
     defattr(name, nil)
     defattr(file, nil)
 
+    short ::= nil
+    long  ::= nil
+    setLong := method(val, self long := val dedentIfNeeded)
 
-    defdesc := method(aChunkOrder, chunks)
-
-
-
-    baseDesc := Description compose(
-        addSection("baseDesc", "
-            Surowy obiekt: unoszaca sie w przestrzeni sfera czegos, co wymyka
-            sie wszelkiemu opisowi. Ksztalty i kolory przedmiotu zmieniaja sie
-            jak w kalejdoskopie, a kazda kombinacja jest jak maly test
-            Rorschacha. Masz wrazenie, ze lepiej nie wpatrywac sie wen zbyt
-            dlugo.
-        " dedent)
+    defdesc(
+        addSection("short")
+        addSection("long")
     )
 
-    id := method(asString)
-    desc := method(
-        baseDesc
-    )
-    asString := method("<#{self type}: #{self name}>" interpolate)
+
+    setShort("lewitujaca pulsujaca kula")
+    setLong("
+        Surowy obiekt: unoszaca sie w przestrzeni sfera... czegos. Ksztalty i
+        kolory przedmiotu zmieniaja sie jak w kalejdoskopie, a kazda kombinacja
+        jest jak maly test Rorschacha. To surowa materia Chaosu, potezna energia
+        czekajaca na uksztaltowanie.
+    ")
+
+
+    desc := method(descriptionFormatter forObject(self))
+
+    asString := method($"<#{self type}: #{self name}>")
 
     destroy := method(
         self env ?rm(self)
         self setEnv(nil)
-        if(self registry size > 0, self registry foreach(link ?destroy))
+        if(self registry size > 0,
+            self registry foreach(link ?destroy))
+        self become(nil)
     )
 
     # callbacks called when an object appears/disappears in current
     # environment
-    notifyGone    := method(what, self)
-    notifyArrived := method(what, self)
+    notifyEnvEnter := method(what, self)
+    notifyEnvLeave := method(what, self)
 
+    notifyInvEnter := method(what, self)
+    notifyInvLeave := method(what, self)
 
     class := method(
         if(self isClass or (self == WorldObject),
@@ -71,27 +97,6 @@ WorldObject do(
         aClone name := name
         self class registry append(WeakLink clone setLink(aClone))
         aClone
-    )
-
-    registryFindAll := method(name,
-        res := list()
-        self registry map(link) foreach(cls,
-            cls registry map(link) foreach(obj,
-                if(obj name == name, res append(obj))
-            )
-        )
-        res
-    )
-
-    registryFind := method(name,
-        self registryFindAll(name) first
-    )
-
-    find := method(what,
-        found := false
-        inEnv := self env inventory select(name == what)
-        inInv := self inventory select(name == what)
-        inEnv clone appendSeq(inInv)
     )
 )
 wl := WeakLink clone

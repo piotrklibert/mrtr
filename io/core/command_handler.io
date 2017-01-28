@@ -32,7 +32,7 @@ BaseCommandHandler := Object clone do(
             )
         )
         if(found not,
-            self player out writeln("Huh?")
+            self player out writeln("Slucham?")
         )
     )
 

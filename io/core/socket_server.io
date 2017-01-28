@@ -16,7 +16,7 @@ BaseConnectionHandler := Object clone do(
         if(err message == "Timeout",
             "continue" asMessage
         ,
-            msg println; "break" asMessage
+            err coroutine backTraceString println; "break" asMessage
         )
     )
 
@@ -36,7 +36,8 @@ BaseConnectionHandler := Object clone do(
             ) catch(
                 ex println
                 self socket writeln("Got exception:")
-                self socket writeln(ex)
+                self socket writeln(ex showStack)
+                self socket writeln(ex coroutine backTraceString)
             )
     )
 

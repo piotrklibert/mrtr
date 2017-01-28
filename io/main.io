@@ -30,5 +30,7 @@ Namespace loadWorldObj("main_hall.io")
 
 doFile("tests/tests.io")
 
+# LocalPlayerHandler clone start
 heartbeat @start
 MTRServer start
+#
