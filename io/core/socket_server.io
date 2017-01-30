@@ -50,7 +50,6 @@ BaseConnectionHandler := Object clone do(
             )
             msg := self socket consumeBuffer
             self doLine(msg)
-            self socket write("> ")
         )
     )
 
@@ -76,6 +75,10 @@ ConnectionHandler := BaseConnectionHandler clone do(
     )
 
     handleLine := method(aLine,
+        # For an out-of-order execution, create a copy of a handler for every
+        # request and then send an async message to it:
+        #   self playerHandler copyWithAttrs @doCommand(aLine)
+        # But then it's hard to know what results come from which command.
         self playerHandler doCommand(aLine)
     )
 

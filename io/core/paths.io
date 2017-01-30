@@ -1,3 +1,17 @@
+Directory walk := method(
+    # We call a given message on each file in the directory, being walked...
+    call delegateToMethod(
+        items select(item, item name != "." and item name !=".."), "map"
+    )
+    # .. and then recursively walk all subdirectories, if there is any.
+    if(directories size > 0,
+        yield
+        directories map(dir, call delegateTo(dir))
+    )
+    nil
+)
+
+
 Paths := Object clone do(
     currentDir := Directory with(System launchPath)
     stdDir     := currentDir directoryNamed("std")

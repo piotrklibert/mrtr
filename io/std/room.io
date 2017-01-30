@@ -20,7 +20,7 @@ Room do(
 
     setShort("podstawowy eteryczny pokoj")
     setContainerDesc("Znajduja sie tutaj: ")
-    setExitsDesc("Dostrzegasz wyjscia na: ")
+    setExitsDesc(ColorMgr colorizedString("yellow", "Dostrzegasz wyjscia na: "))
 
     setLeaveDesc("#{what} podaza na #{where}.")
     setEnterDesc("#{what} przybywa z #{where}.")
@@ -88,9 +88,8 @@ Room do(
     addAction := method(predData, descriptions,
         if(predData isKindOf(Sequence), predData := list(predData))
         name := predData at(0) asMutable replaceSeq(" ", "_") asString
-        pred := block(line,
-            predData foreach(s, if(line beginsWithSeq(s), return true))
-        )
+        pred := block(line, line beginsWithAnyOf(predData))
+
         action := block(line, actor,
             actor show($$(descriptions at(0)))
             if(descriptions size > 1,

@@ -1,3 +1,16 @@
+Object copyWithAttrs := method(
+    c := self clone
+    self slotNames foreach(s,
+        c setSlot(s, self getSlot(s))
+    )
+    c
+)
+
+Block oldAsString := Block getSlot("asString")
+Block asString := Block getSlot("asSimpleString")
+List asString := method(
+    "[" .. self fmt .. "]"
+)
 File relPath := method(
     self path asMutable removePrefix(System launchPath) strip("/")
 )
@@ -142,7 +155,11 @@ Directory asString := method("<Dir: '" .. self name .. "'>")
 
 Sequence beginsWithAnyOf := method(
     str := self
-    call evalArgs map(prefix, str beginsWithSeq(prefix)) reduce(or)
+    if(call message arguments size == 1,
+        args := call evalArgAt(0),
+        args := call evalArgs
+    )
+    args map(prefix, str beginsWithSeq(prefix)) reduce(or)
 )
 
 Regex matches := method(str,
@@ -198,9 +215,11 @@ List fmt := method(
 )
 
 List firstOr := method(
-    el := self first
-    el ifNil(
-        el := call evalArgAt(0)
-    )
-    el
+    self first ifNilEval(call evalArgAt(0))
+)
+
+Object getWordData := method(word,
+    cmd := $$("python odmiana.py #{word} > o")
+    if(System system(cmd) != 0, Exception raise("No such word!"))
+    doString("o" asFile contents setEncoding("utf8"))
 )

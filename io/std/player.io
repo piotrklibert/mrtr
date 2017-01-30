@@ -98,7 +98,6 @@ Player do(
     )
 
     defcmd(sp, ==("sp"),
-        writeln("dcsv df adf ad adg >>>>>>>>>>>>>>>>>>")
         self out writeln(self env desc forPlayer(self))
     )
     defcmd(emote, beginsWithSeq("emote"),

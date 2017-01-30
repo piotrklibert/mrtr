@@ -1,7 +1,7 @@
 BaseCommandHandler := Object clone do(
     defattr(lastCommand, nil)
-    defattr(commands, nil, globalCommands)
-    defattr(player, nil, playerObject)
+    defattr(commands, nil)
+    defattr(player, nil)
 
 
     destroy := method(
@@ -32,8 +32,13 @@ BaseCommandHandler := Object clone do(
             )
         )
         if(found not,
-            self player out writeln("Slucham?")
+            self player show("Slucham?")
         )
+        self displayPrompt
+    )
+
+    displayPrompt := method(
+        self player out write("> ")
     )
 
     _performAction := method(cmdObj, actionName, cmdLine,
