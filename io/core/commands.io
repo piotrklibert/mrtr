@@ -14,7 +14,7 @@ Commands do(
         args := line split slice(1)
         Paths cd(args at(0))
     )
-    defcmd(pwd, beginsWithSeq("pwd"),
+    defcmd(pwd, ==("pwd"),
         actor out writeln(Paths currentDir path)
     )
     defcmd(ls, beginsWithSeq("ls"),
@@ -27,19 +27,19 @@ Commands do(
         )
     )
 
-    defcmd(y, beginsWithSeq("a"),
-        WorldObject registry removeBySel(link) map(link) foreach(x,
+    defcmd(y, ==("objs"),
+        WorldObject registry removeBySel(link not) map(link) foreach(x,
             if(x registry size > 0,
                 actor out lexicalDo(
                     writeln(x type .. ":")
                     write("\t")
-                    writeln(x registry removeBySel(link) clone map(link asString) fmt)
+                    writeln(x registry removeBySel(link not) clone map(link asString) fmt)
                 )
             )
         )
     )
 
-    defcmd(z, beginsWithSeq("z"),
+    defcmd(z, ==("z"),
         Quit raise("quit")
     )
 )

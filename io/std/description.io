@@ -15,7 +15,7 @@ Description := Object clone do(
             if(desc,
                 res append(if(width, desc wrap(width), desc))
             ,
-                writeln($"Chunk '#{x}' of #{self object} returned nil or false.")
+                debugWriteln($"Chunk '#{x}' of #{self object} returned nil or false.")
             )
         )
         res join("\n")
@@ -27,7 +27,11 @@ Description := Object clone do(
         self order append(name)
         self chunks atPut(name, arg1)
         self setSlot(
-            name, method(self object doMessage(call message))
+            name, method(
+                msg := call message clone
+                msg appendArg(message(self player))
+                self object doMessage(msg, thisContext)
+            )
         )
     )
 

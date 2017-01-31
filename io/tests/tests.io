@@ -26,3 +26,5 @@ assert(a env == nil)
 
 a setEnv("ok")
 assert(a env == "ok")
+removeSlot("foo")
+removeSlot("foo2")

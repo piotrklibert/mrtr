@@ -6,11 +6,28 @@ PlayerOptions := Object clone do(
 )
 
 Player do(
+
     defattr(options, PlayerOptions clone)
     defattr(evalContext, nil)
+    defattr(commandHandler, nil)
 
     defdesc(
         addSection("baseDesc")
+    )
+
+    makeNew := method(
+        obj := resend
+        obj asString := method($"<Player: '#{self name}'>")
+        obj
+    )
+
+    restore := method(name, aWriter,
+        # TODO: not used yet, see ../core/command_handler.io
+        player := Player makeNew(name)
+        player setOut(aWriter)
+        saveFile := Paths currentDir fileNamed(name)
+        roomName := if(saveFile exists, saveFile contents, "world/main_hall.io")
+        Namespace ensureLoaded(roomName)
     )
 
     short := method(name)
@@ -18,7 +35,7 @@ Player do(
 
     notifyEnvEnter := method(what, from,
         what := what name
-        where := self env getExitTo(from ?file worldRelPath) ?dir
+        where := self env getExitTo(from ?classFile worldRelPath) ?dir
         if(where,
             self show($$(self env enterDesc)),
             self show($"#{what} pojawia sie w klebach dymu.")
@@ -27,7 +44,7 @@ Player do(
 
     notifyEnvLeave := method(what, to,
         what := what name
-        where := self env getExitTo(to ?file worldRelPath) ?dir
+        where := self env getExitTo(to ?classFile worldRelPath) ?dir
         if(where,
             self show($$(self env leaveDesc)),
             self show($"#{what} znika w klebach dymu.")
@@ -53,6 +70,10 @@ Player do(
         self others map(performWithArgList("show", call evalArgs); self)
     )
 
+    destroy := method(
+        Paths currentDir fileNamed(self name) setContents(self env classFile relPath)
+        resend
+    )
 
     #
     # Commands
@@ -89,7 +110,7 @@ Player do(
         actor show($"Odkladasz #{what}.") showOthers(
             $"#{actor} odklada #{what}.")
     )
-    defcmd(inv, beginsWithSeq("i"),
+    defcmd(inv, ==("i"),
         if(self inventory size == 0,
             actor show("Nie masz w tej chwili nic przy sobie.")
         ,
@@ -100,10 +121,10 @@ Player do(
     defcmd(sp, ==("sp"),
         self out writeln(self env desc forPlayer(self))
     )
+
     defcmd(emote, beginsWithSeq("emote"),
         msg := self name .. line asMutable removePrefix("emote")
         actor show(msg) showOthers(msg)
-
     )
 
     defcmd(destroyObj, beginsWithSeq("destroy"),
@@ -138,7 +159,7 @@ Player do(
         what moveTo(where)
     )
 
-    defcmd(ob, beginsWithSeq("ob"),
+    defcmd(ob, beginsWithSeq("ob ") or ==("ob"),
         what := line split slice(1) at(0)
         obj := actor findNearby(what)
         if(obj,
@@ -153,10 +174,9 @@ Player do(
 
     defcmd(cloneObj, beginsWithSeq("clone"),
         what := line split at(1)
-        cls := WorldObject registry map(link) select(file ?baseName  == what) first
+        cls := WorldObject registry map(link) select(classFile ?baseName  == what) first
         cls ifNil(cls := actor findNearby(what))
         obj := cls makeNew
-        obj setFile(cls class file)
         actor show(
             $"Koncentrujesz sie i wypowiadasz zaklecie, materializujac #{obj short}."
         ) showOthers(
@@ -165,7 +185,11 @@ Player do(
         obj moveTo(actor env)
 
     )
-
+    defcmd(help, beginsWithSeq("?"),
+        l := List clone copy(actor commandHandler commands getCmdList)
+        l appendSeq(actor getCmdList)
+        l foreach(x, actor show(x at(0)))
+    )
     defcmd(bang, beginsWithSeq("!"),
         self evalContext ifNil(
             self setEvalContext(thisContext clone)

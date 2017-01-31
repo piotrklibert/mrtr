@@ -43,24 +43,21 @@ Room do(
 
     exitsString := method(
         if(self exits size > 0,
-            self exitsDesc .. self exits map(dir) fmt)
+            self exitsDesc .. self exits map(direction) fmt)
     )
 
     titleString := method(actor,
-        fname := ColorMgr colorizedString("red", $"[#{self file relPath}]")
+        fname := ColorMgr colorizedString("red", $"[#{self classFile relPath}]")
         ColorMgr colorizedString("yellow", $">>> #{short} #{fname}")
     )
 
-    asString := method("<Room: " ..  self file ?name  .. ">")
+    asString := method($"<Room: '#{self classFile ?relPath}'>")
 
     getExitTo := method(exitTo, self exits detect(file == exitTo))
 
 
     addItem := method(aName, aDescription,
-        self items append(Map clone with(
-            "name", aName,
-            "desc", aDescription dedentIfNeeded
-        ) asObject)
+        self items append(ObjectDetail with(aName, aDescription))
     )
 
 
@@ -101,34 +98,30 @@ Room do(
 
     addExit := method(dir, file,
         writeln($"Adding exit #{dir} to #{file}")
-        self exits append(Map with(
-            "dir", dir, "file", file, asString(method(dir))
-        ) asObject)
+        currentExit := RoomExit with(dir, file)
+        self exits append(currentExit)
         target := call target
         action := block(cmd, actor,
-            ex := try(
-                fname := target getSlot(call message name) fname
-                room := Room registry select(link ?file relPath == ("world/" .. fname)) first ?link
-                if(room not,
-                    room := Namespace loadWorldObj(fname)
-                )
+            try(
+                fname := "world/" .. file
+                Namespace ensureLoaded(fname)
+                room := Room registry map(link) detect(classFile relPath == fname)
                 actor moveTo(room)
                 actor show(room desc forPlayer(actor))
-            )
-            ex catch(
+                currentExit destination := room
+            ) catch(
                 actor show(ex coroutine backTraceString)
             )
         )
-        action fname := file
+        # action fname := file
 
         defcommand(
             ("go_" .. dir),
             block(line, line == dir),
             action
         )
-        body := message(
-            fname := getSlot(call message name)
-
-        )
+        # body := message(
+        #     fname := getSlot(call message name)
+        # )
     )
 )

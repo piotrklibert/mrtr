@@ -1,25 +1,50 @@
+WrappedFile := Object clone do(
+    currentChecksum := method(self file sha1String)
+
+    with := method(aFile, aSlotList,
+        wfile := WrappedFile clone
+        wfile file := aFile
+        wfile checksum := aFile sha1String
+        wfile slots := aSlotList
+        wfile
+    )
+)
+
 Namespace := Object clone
 Namespace do(
-    currentlyLoadingFile := nil
+    loadedFiles ::= list()
+    currentlyLoadingFile ::= nil
 
-    loadWorldObj := method(file,
-        file := Paths worldDir fileNamed(file) path
-        loadFile(file)
+    ensureLoaded := method(file,
+        self loadedFiles map(file relPath) detect(== file) ifNil(
+            self loadFile(file)
+        )
     )
-    loadStd := method(file,
-        file := Paths stdDir fileNamed(file) path
-        loadFile(file)
-    )
-    loadFile := method(file,
-        # "Reading file #{file}: " interpolate print
+
+    loadStd := method(file, loadFile(Paths stdDir fileNamed(file)))
+    loadWorldObj := method(file, loadFile(Paths worldDir fileNamed(file)))
+
+    loadFile := method(aFile,
+        loadedObj := nil
+        file := aFile asFile
         ns := if(self == Namespace, Namespace clone, self)
-        self file := file
-        Namespace currentlyLoadingFile := file
-        ns doFile(file)
-        loadedObj := ns doLoad()
-        Namespace currentlyLoadingFile := nil
+
+        Namespace setCurrentlyLoadingFile(file)
+        ex := try(
+            ns doFile(file path)
+            loadedObj := ns doLoad()
+        )
+        ex catch(
+            writeln("Error evaluating #{file path}: #{ex}" interpolate)
+        )
+        ex ifNil(
+            loadedFiles append(WrappedFile with(file))
+        )
+        Namespace setCurrentlyLoadingFile(nil)
         loadedObj
     )
+
+
 
     getDiff := method(
         lobbyNames := Lobby slotNames
@@ -35,16 +60,16 @@ Namespace do(
     doLoad := method(
         diff := self getDiff
         diff new foreach(attrName,
-            "+#{attrName} " interpolate print
-            self getSlot(attrName) ?setFile(File with(file))
-            self getSlot(attrName) ?setName(attrName)
+            # "+#{attrName} " interpolate println
+            self getSlot(attrName) ?setClassFile(currentlyLoadingFile)
+            self getSlot(attrName) ?setClassName(attrName)
             self getSlot(attrName) ?setIsClass(attrName at(0) isUppercase)
             Lobby setSlot(attrName, self getSlot(attrName))
         )
         diff updated foreach(attrName,
-            "*#{attrName} " interpolate print
-            self getSlot(attrName) ?setFile(File with(file))
-            self getSlot(attrName) ?setName(attrName)
+            # "*#{attrName} " interpolate println
+            self getSlot(attrName) ?setClassFile(currentlyLoadingFile)
+            self getSlot(attrName) ?setClassName(attrName)
 
             # TODO: what to copy from the old version to new?
             if(Lobby getSlot(attrName) isKindOf(WorldObject),

@@ -1,28 +1,7 @@
-Registry := List clone do(
-    registryFindAll := method(name,
-        res := list()
-        self registry map(link) foreach(cls,
-            cls registry map(link) foreach(obj,
-                if(obj name == name, res append(obj))
-            )
-        )
-        res
-    )
-
-    registryFind := method(name,
-        self registryFindAll(name) first
-    )
-
-    findRoom := method(path,
-        Room registry detect(link ?file path == path)
-    )
-)
-
 WorldObject := Object clone
 
 WorldObject do(
-    defattr(isClass, nil)
-    defattr(registry, list())
+    defattr(registry, Registry on(yourself))
 
     defattr(out, StdOut)
     descriptionFormatter ::= nil
@@ -32,12 +11,19 @@ WorldObject do(
     defattr(goingTo, nil)
 
     # set by the Namespace loader
-    defattr(name, nil)
-    defattr(file, nil)
+    defattr(isClass, nil)
+    defattr(className, nil)
+    defattr(classFile, nil)
 
-    short ::= nil
-    long  ::= nil
-    setLong := method(val, self long := val dedentIfNeeded)
+    name  ::= "<unnamed>"
+
+    _long  := nil
+    long := method(_long)
+    setLong := method(val, self _long := val dedentIfNeeded)
+
+    _short := nil
+    short := method(_short)
+    setShort := method(val, self _short := val)
 
     defdesc(
         addSection("short")
@@ -49,14 +35,24 @@ WorldObject do(
     setLong("
         Surowy obiekt: unoszaca sie w przestrzeni sfera... czegos. Ksztalty i
         kolory przedmiotu zmieniaja sie jak w kalejdoskopie, a kazda kombinacja
-        jest jak maly test Rorschacha. To surowa materia Chaosu, potezna energia
-        czekajaca na uksztaltowanie.
+        jest jak nowy test Rorschacha. Oto surowa materia Chaosu, potezna
+        energia czekajaca na uksztaltowanie.
     ")
 
 
     desc := method(descriptionFormatter forObject(self))
 
-    asString := method($"<#{self type}: #{self name}>")
+    asString := method(
+        desc := if(self isClass,
+            self classFile relPath,
+            [
+                self getSlot("name"),
+                self getSlot("short"),
+                self getSlot("uniqueId")
+            ] select(asBoolean) first
+        )
+        $"<#{self type}: '#{desc}'>"
+    )
 
     destroy := method(
         self env ?rm(self)
@@ -83,18 +79,19 @@ WorldObject do(
 
     inherit := method(
         aClone := self clone
-        WorldObject registry append(
-            WeakLink clone setLink(aClone)
-        )
+        WorldObject registry append(WeakLink clone setLink(aClone))
         aClone
     )
 
     makeNew := method(name,
         aClone := self clone
         name ifNil(
-            name := self name asLowercase .. (self registry size + 1) asString
+            name := self className asLowercase .. (self registry size + 1)
         )
         aClone name := name
+        aClone setClassFile(self class classFile)
+        aClone setClassName(self class className)
+        aClone setIsClass(false)
         self class registry append(WeakLink clone setLink(aClone))
         aClone
     )

@@ -14,7 +14,7 @@ kuznia do(
         The red-hot furnace sizzles, spitting sparks.
     " dedent)
 	addEvent(135, "
-        Well-biult smith is humming the unrecognizable tune.
+        Well-built smith is humming the unrecognizable tune.
     " dedent)
     addEvent(135, "
         Some customer performs a trial swings with his new sword.

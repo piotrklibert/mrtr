@@ -12,10 +12,11 @@ mainHall do(
         wiekszosc drzwi pozostaje zamknieta.
     ")
 
+
     addItem(["plachte", "plachty", "folie", "slowo", "napis"], "
         Grube, mleczne i lekko przezroczyste. plastikowe zaslony okalaja
-        centralna czesc pomieszczenia i ukrywaja przed wzrokiem ciekawskich
-        cokolwiek moze sie dziac za nimi.
+        centralna czesc pomieszczenia i uniemozliwiaja latwe zajrzenie do
+        srodka.
     " dedent)
     addItem(["drzwi", "wyjscia", "wyjscie"], "TODO")
     addItem(["korytarz"], "TODO")

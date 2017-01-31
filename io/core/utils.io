@@ -1,3 +1,79 @@
+ObjectDetail := Object clone do(
+    with := method(name, desc,
+        cln := self clone
+        cln name := if(name isKindOf(List) not, [name], name)
+        cln desc := desc dedentIfNeeded
+        cln
+    )
+    asString := method(
+        name := self name first
+        desc := self desc slice(0, 35)
+        dots := if(self desc size > 35, "...", "")
+        "<ObjectDetail: name='#{name}', desc='#{desc}#{dots}'>" interpolate
+    )
+)
+
+RoomExit := Object clone do(
+    with := method(direction, destination,
+        cln := self clone
+        cln direction := direction
+        cln destination := destination
+        cln
+    )
+    asString := method("<Exit: #{direction} to '#{destination}'>" interpolate)
+)
+
+
+Registry := List clone do(
+    on := method(obj,
+        WO := Lobby getSlot("WorldObject")
+        cls := if(WO not or (obj == WO), WorldRegistry, Registry)
+        cln := cls clone
+        (cls == WorldRegistry) ifTrue(cls globalRegistryInstance := cln)
+        cln
+    )
+
+    cleanUp := method(
+        self removeSeq(self select(link not))
+        self
+    )
+
+    matchObject := method(objDesc, obj,
+        (obj ?className == objDesc) or \
+        (obj ?classFile relPath endsWithSeq(objDesc)) or \
+        (obj ?name == objDesc)
+    )
+
+    find := method(desc, self map(link) select(obj, matchObject(desc, obj)))
+    findAny := method(name, self find(name) first)
+    asString := method("<Registry: [" .. self map(link) fmt .. "]>")
+)
+
+WorldRegistry := Registry clone do(
+    getRegistry := method(
+        if(self hasLocalSlot("globalRegistryInstance"),
+            globalRegistryInstance,
+            self
+        )
+    )
+    cleanUp := method(
+        resend
+        self map(link registry) select(!= self) foreach(cleanUp)
+        self
+    )
+    getAllInstances := method(
+        self getRegistry map(link registry) flatten map(link)
+    )
+    findInstances := method(desc,
+        self getRegistry getAllInstances select(obj, matchObject(desc, obj))
+    )
+    findInstance := method(desc,
+        self getRegistry findInstances(desc) first
+    )
+)
+
+
+File asFile := method(self)
 Object copyWithAttrs := method(
     c := self clone
     self slotNames foreach(s,
@@ -58,19 +134,8 @@ Object $$ := Object getSlot("$")
 OperatorTable addOperator("$", 13)
 
 List removeBySel := method(
-    # TODO: probably very inefficient
     msg := call argAt(0)
-    toBeRemoved := list()
-    self foreach(x,
-        if(x doMessage(msg) not,
-            writeln("aaaaaa>>>", x doMessage(msg), msg)
-            toBeRemoved append(x)
-        )
-    )
-    toBeRemoved foreach(x,
-        self remove(x)
-    )
-    self
+    self clone removeSeq(self select(x, x doMessage(msg)))
 )
 
 Object assert := method(

@@ -57,11 +57,12 @@ BaseCommandHandler := Object clone do(
 
 RemotePlayerHandler := BaseCommandHandler clone do(
     with := method(aSocket, name,
+        c := self clone
         player := Player makeNew(name) lexicalDo(
+            setCommandHandler(c)
             setOut(SocketWriter withSocket(aSocket))
             moveTo(mainHall)
         )
-        c := self clone
         c setCommands(Commands clone)
         c setPlayer(player)
         c
