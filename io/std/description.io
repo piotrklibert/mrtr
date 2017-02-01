@@ -1,4 +1,15 @@
-Sequence asDescription := method(Description withString(self))
+Object defdesc := method(
+    msg := call argAt(0)
+    ctx := call sender
+    desc := Description clone
+    desc doMessage(msg, ctx)
+    ctx setDescriptionFormatter(desc)
+    desc
+)
+
+Sequence asDescription := method(
+    Description withString(self)
+)
 
 Description := Object clone do(
     defattr(chunks, Map clone)

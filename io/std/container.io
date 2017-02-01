@@ -26,6 +26,12 @@ Container := WorldObject inherit do(
          self inventory foreach(notifyEnvLeave(what, to))
     )
 
+    notifyLoaded := method(prevObj,
+        resend
+        if(prevObj, prevObj inventory foreach(moveTo(self)))
+    )
+
+
     add := method(obj,
         inventory append(obj)
         self notifyInvEnter(obj, obj comingFrom)

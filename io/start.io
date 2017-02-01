@@ -3,10 +3,28 @@ Server
 Regex
 Range
 SHA1
+Random
 Namespace
 
+Lobby do(
+    # Object debugOn()
+    # Scheduler currentCoroutine setMessageDebugging(true)
+    debugModeEnabled := true
+)
+
+Lobby do(
+    doFile("utils/syntax.io")
+    doFile("utils/str.io")
+    doFile("utils/misc.io")
+    doFile("utils/attrs.io")
+    doFile("utils/reg.io")
+    doFile("utils/details.io")
+    doFile("utils/exits.io")
+    doFile("utils/events.io")
+    doFile("utils/err.io")
+)
+
 Namespace do(
-    loadFile("core/utils.io")
     loadFile("core/paths.io")
     loadFile("core/output_handler.io")
     loadFile("core/colors.io")
@@ -35,3 +53,11 @@ doFile("tests/tests.io")
 heartbeat @start
 MTRServer start
 #
+# Collector allObjects foreach(i, obj,
+#     i println
+#     if(i == 566, continue)
+#     getSlot("obj") isActivatable print
+#     getSlot("obj") uniqueId println
+#     nil
+# )
+# writeln("END")

@@ -3,6 +3,7 @@ Commands := CommandSet clone do(
 )
 
 Commands do(
+    defcmd(restart, ==("restart"), System exit(0))
     defcmd(cat, beginsWithSeq("cat"),
         arg := line split at(1)
         Paths currentDir fileNamed(arg) readLines foreach(x,

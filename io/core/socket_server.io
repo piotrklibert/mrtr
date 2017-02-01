@@ -34,7 +34,6 @@ BaseConnectionHandler := Object clone do(
                 self socket close
                 break
             ) catch(
-                ex println
                 self socket writeln("Got exception:")
                 self socket writeln(ex showStack)
                 self socket writeln(ex coroutine backTraceString)
@@ -68,8 +67,12 @@ ConnectionHandler := BaseConnectionHandler clone do(
      * All object construction and initialization happens here.
      */
     handleConnect := method(
-        self socket write("Your name? ")
-        name := self socket readUntilSeq("\r\n")
+        name := if(Lobby debugModeEnabled not,
+            self socket write("Your name? ")
+            self socket readUntilSeq("\r\n")
+        ,
+            Object clone uniqueId asString
+        )
         self setPlayerHandler(RemotePlayerHandler with(self socket, name))
         self playerHandler doCommand("sp")
     )

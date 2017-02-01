@@ -6,7 +6,6 @@ PlayerOptions := Object clone do(
 )
 
 Player do(
-
     defattr(options, PlayerOptions clone)
     defattr(evalContext, nil)
     defattr(commandHandler, nil)
@@ -35,7 +34,7 @@ Player do(
 
     notifyEnvEnter := method(what, from,
         what := what name
-        where := self env getExitTo(from ?classFile worldRelPath) ?dir
+        where := self env getExitTo(from ?sourceFile worldRelPath) ?dir
         if(where,
             self show($$(self env enterDesc)),
             self show($"#{what} pojawia sie w klebach dymu.")
@@ -44,7 +43,7 @@ Player do(
 
     notifyEnvLeave := method(what, to,
         what := what name
-        where := self env getExitTo(to ?classFile worldRelPath) ?dir
+        where := self env getExitTo(to ?sourceFile worldRelPath) ?dir
         if(where,
             self show($$(self env leaveDesc)),
             self show($"#{what} znika w klebach dymu.")
@@ -71,7 +70,7 @@ Player do(
     )
 
     destroy := method(
-        Paths currentDir fileNamed(self name) setContents(self env classFile relPath)
+        Paths currentDir fileNamed(self name) setContents(self env sourceFile relPath)
         resend
     )
 
@@ -174,7 +173,7 @@ Player do(
 
     defcmd(cloneObj, beginsWithSeq("clone"),
         what := line split at(1)
-        cls := WorldObject registry map(link) select(classFile ?baseName  == what) first
+        cls := WorldObject registry map(link) select(sourceFile ?baseName  == what) first
         cls ifNil(cls := actor findNearby(what))
         obj := cls makeNew
         actor show(
@@ -199,8 +198,37 @@ Player do(
             ctx p := actor
             ctx here := actor env
             res := ctx doString(line asMutable removePrefix("!"))
+            ctx removeSlot("here")
+            ctx removeSlot("p")
             actor out writeln(res)
         )
         if(ex, actor out writeln(ex))
+    )
+
+    defcmd(tmp, ==("tmp"),
+        # r := Room registry at(-2) link
+        Collector allObjects  foreach(obj,
+            getSlot("obj") isActivatable print
+            getSlot("obj") uniqueId println
+            found := nil
+            # try(
+            #     obj slotNames foreach(n,
+            #         if(n in(["parentCoroutine", "runMessage", "result", "runLocals", "runTarget", "call", "matchedAction", "updateSlot", "cs", "commandLine", "self"]), continue)
+            #         writeln("+++++++++++", getSlot("n"))
+            #         try(
+            #             if(obj getSlot(n) getSlot("isActivatable") not,
+            #                 if(obj getSlot(n) == r,
+            #                     writeln(">>>>>>>>>>>", n)
+            #                     found := true
+            #                 )
+            #             )
+            #         )
+            #     )
+            # )
+            # try(if(found, writeln(obj, obj slotSummary)))
+            # found
+        )
+        writeln("KOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONIEC")
+        self
     )
 )

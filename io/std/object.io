@@ -12,8 +12,8 @@ WorldObject do(
 
     # set by the Namespace loader
     defattr(isClass, nil)
-    defattr(className, nil)
-    defattr(classFile, nil)
+    defattr(loadName, nil)
+    defattr(sourceFile, nil)
 
     name  ::= "<unnamed>"
 
@@ -44,7 +44,7 @@ WorldObject do(
 
     asString := method(
         desc := if(self isClass,
-            self classFile relPath,
+            self sourceFile relPath,
             [
                 self getSlot("name"),
                 self getSlot("short"),
@@ -70,6 +70,16 @@ WorldObject do(
     notifyInvEnter := method(what, self)
     notifyInvLeave := method(what, self)
 
+    notifyLoaded := method(prevObj,
+        debugWriteln($"Loading #{self sourceFile relPath}.")
+        if(prevObj,
+            self setEnv(prevObj env)
+            self setRegistry(prevObj registry)
+        )
+    )
+
+    notifyWillUnload := method()
+
     class := method(
         if(self isClass or (self == WorldObject),
             self,
@@ -86,12 +96,14 @@ WorldObject do(
     makeNew := method(name,
         aClone := self clone
         name ifNil(
-            name := self className asLowercase .. (self registry size + 1)
+            name := self loadName asLowercase .. (self registry size + 1)
         )
         aClone name := name
-        aClone setClassFile(self class classFile)
-        aClone setClassName(self class className)
+        aClone setSourceFile(self class sourceFile)
+        aClone setLoadName(self class loadName)
         aClone setIsClass(false)
+        fromWhere := call sender Namespace currentlyLoadingFile ?relPath
+        debugWriteln($"makeNew of #{self} called from: #{fromWhere}")
         self class registry append(WeakLink clone setLink(aClone))
         aClone
     )

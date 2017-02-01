@@ -24,7 +24,7 @@ mainHall do(
     addEvent(145, "Jakis zagubiony podmuch wiatru szelesci w zaslonach.")
     addEvent(145, "W powietrzu unosi sie zapach cementu, betonu i gruzu.")
     addEvent(145, "Cos ciezkiego i najwyrazniej metalowego laduje z brzekiem na podlodze.")
-    addEvent(145, "TODO...")
+    addEvent(145, "Zza kurtyny dobiegaja glosy krotkiej rozmowy.")
 
     addAction(["spojrz za zaslone", "zerknij za zaslone", "spojrz za placht"], [
         "Bez wiekszego trudu udaje ci sie odchylic jedna z placht, spogladajac do srodka. Widzisz: TODO",

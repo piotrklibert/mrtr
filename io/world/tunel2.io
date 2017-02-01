@@ -3,13 +3,11 @@ tunel2 := Room makeNew
 tunel2 do(
 	setShort("W tunelu.")
     setLong("
-    	Przejscie w kierunku polnocnym jest wyraznie wieksze.
-    	Droga na poludnie pograzona jest w mroku.")
+        Przejscie w kierunku polnocnym jest wyraznie wieksze. Droga na poludnie
+        pograzona jest w mroku.
+    ")
 
-
-    addEvent(45, "
-        Niedaleko slychac metaliczne pobrzekiwanie.
-    " dedent)
+    addEvent(45, "Niedaleko slychac metaliczne pobrzekiwanie.")
 
 
     addExit("s", "tunel1.io")

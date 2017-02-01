@@ -2,6 +2,8 @@ Room := Container inherit
 Room appendProto(CommandSet)
 
 Room do(
+    debugOn()
+
     defattr(exits, list())
     defattr(items, list())
     defattr(events, list())
@@ -47,39 +49,37 @@ Room do(
     )
 
     titleString := method(actor,
-        fname := ColorMgr colorizedString("red", $"[#{self classFile relPath}]")
+        fname := ColorMgr colorizedString("red", $"[#{self sourceFile relPath}]")
         ColorMgr colorizedString("yellow", $">>> #{short} #{fname}")
     )
 
-    asString := method($"<Room: '#{self classFile ?relPath}'>")
+    asString := method($"<Room: '#{self sourceFile ?relPath}'>")
 
-    getExitTo := method(exitTo, self exits detect(file == exitTo))
+    getExitTo := method(exitTo, self exits detect(sourceFile relPath == exitTo))
 
+    destroy := method(
+        debugWriteln($"Room: destroying instance: ${self sourceFile relPath}")
+        self setEventRunner(nil)
+        resend
+    )
 
     addItem := method(aName, aDescription,
         self items append(ObjectDetail with(aName, aDescription))
     )
 
+    announce := method(what,
+        self inventory select(isKindOf(Player)) foreach(p,
+            p show(what asDescription forPlayer(p))
+        )
+    )
+
+    playEvent := method(
+        self announce(self events anyOne)
+    )
 
     addEvent := method(time, desc,
         self events append(desc)
-        self eventRunner ifNil(
-            self setEventRunner(
-                block(
-                    randomEl := (self events size * Random value) floor
-                    self inventory select(isKindOf(Player)) foreach(p,
-                        p out writeln(self events at(randomEl) asDescription forPlayer(p))
-                    )
-                    if(self eventRunner,
-                        wait(time + (Random value * 10))
-                        self eventRunner @call)
-                )
-            )
-            block(
-                wait(10);
-                self eventRunner call
-            ) @call
-        )
+        self eventRunner ifNil(self setEventRunner(EventRunner with(self)))
     )
 
     addAction := method(predData, descriptions,
@@ -97,23 +97,24 @@ Room do(
     )
 
     addExit := method(dir, file,
-        writeln($"Adding exit #{dir} to #{file}")
+        debugWriteln($"Adding exit #{dir} to #{file}")
         currentExit := RoomExit with(dir, file)
         self exits append(currentExit)
         target := call target
         action := block(cmd, actor,
-            try(
+            ex := try(
                 fname := "world/" .. file
                 Namespace ensureLoaded(fname)
-                room := Room registry map(link) detect(classFile relPath == fname)
+                room := Room registry cleanUp map(link) detect(sourceFile relPath == fname)
+
                 actor moveTo(room)
                 actor show(room desc forPlayer(actor))
                 currentExit destination := room
-            ) catch(
+            )
+            ex catch(
                 actor show(ex coroutine backTraceString)
             )
         )
-        # action fname := file
 
         defcommand(
             ("go_" .. dir),

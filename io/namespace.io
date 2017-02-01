@@ -57,35 +57,41 @@ Namespace do(
         ) asObject
     )
 
+    setNamespaceData := method(name, object,
+        object ?setSourceFile(currentlyLoadingFile)
+        object ?setLoadName(name)
+        object ?setIsClass(name at(0) isUppercase)
+    )
+
+
+    loadNew := method(attrName,
+        debugWriteln("+#{attrName}" interpolate)
+        newVal := self getSlot(attrName)
+        setNamespaceData(attrName, newVal)
+        newVal ?notifyLoaded(nil)
+        Lobby setSlot(attrName, newVal)
+    )
+
+    loadUpdate := method(attrName,
+        debugWriteln("*#{attrName}" interpolate)
+        setNamespaceData(attrName, self getSlot(attrName))
+
+        oldVal := Lobby getSlot(attrName)
+        newVal := self getSlot(attrName)
+
+        oldVal ?notifyWillUnload()
+        newVal ?notifyLoaded(oldVal)
+
+        oldVal become(newVal)
+        WorldObject registry cleanUp
+    )
+
     doLoad := method(
         diff := self getDiff
-        diff new foreach(attrName,
-            # "+#{attrName} " interpolate println
-            self getSlot(attrName) ?setClassFile(currentlyLoadingFile)
-            self getSlot(attrName) ?setClassName(attrName)
-            self getSlot(attrName) ?setIsClass(attrName at(0) isUppercase)
-            Lobby setSlot(attrName, self getSlot(attrName))
-        )
-        diff updated foreach(attrName,
-            # "*#{attrName} " interpolate println
-            self getSlot(attrName) ?setClassFile(currentlyLoadingFile)
-            self getSlot(attrName) ?setClassName(attrName)
+        diff new     foreach(attrName, loadNew(attrName))
+        diff updated foreach(attrName, loadUpdate(attrName))
 
-            # TODO: what to copy from the old version to new?
-            if(Lobby getSlot(attrName) isKindOf(WorldObject),
-                oldVal := Lobby getSlot(attrName)
-                newVal := self getSlot(attrName)
-                newVal setEnv(oldVal env)
-                newVal setRegistry(oldVal registry)
-                if(oldVal isKindOf(Container),
-                    oldVal inventory foreach(
-                        moveTo(newVal)
-                    )
-                )
-            )
-            Lobby getSlot(attrName) become(self getSlot(attrName))
-        )
-        if(diff updated size > 0, writeln)
-        Lobby getSlot(diff new firstOr(diff updated first))
+        Lobby getSlot(diff new first ifNilEval(diff updated first))
+        self removeAllSlots()
     )
 )
