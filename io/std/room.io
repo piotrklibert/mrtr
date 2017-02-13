@@ -27,7 +27,6 @@ Room do(
     setLeaveDesc("#{what} podaza na #{where}.")
     setEnterDesc("#{what} przybywa z #{where}.")
 
-
     setLong("
         Ledwie widoczna, prawie calkiem przezroczysta z lekkim odcieniem blekitu
         powierzchnia jest tutaj odpowiednikiem podlogi. Brak widocznych scian i
@@ -37,8 +36,9 @@ Room do(
         pochodzi jakby z samych oblokow.
     ")
 
+
     contentsString := method(actor,
-        contents := actor allOthers map(short)
+        contents := if(actor, actor allOthers, self inventory) map(short)
         if(contents size > 0,
             contents fmt)
     )
@@ -53,9 +53,10 @@ Room do(
         ColorMgr colorizedString("yellow", $">>> #{short} #{fname}")
     )
 
+
     asString := method($"<Room: '#{self sourceFile ?relPath}'>")
 
-    getExitTo := method(exitTo, self exits detect(sourceFile relPath == exitTo))
+    getExitTo := method(exitTo, self exits detect(leadsTo(exitTo)))
 
     destroy := method(
         debugWriteln($"Room: destroying instance: ${self sourceFile relPath}")
@@ -105,7 +106,8 @@ Room do(
             ex := try(
                 fname := "world/" .. file
                 Namespace ensureLoaded(fname)
-                room := Room registry cleanUp map(link) detect(sourceFile relPath == fname)
+                room := Room registry cleanUp map(link) \
+                    detect(sourceFile relPath == fname)
 
                 actor moveTo(room)
                 actor show(room desc forPlayer(actor))
@@ -121,8 +123,5 @@ Room do(
             block(line, line == dir),
             action
         )
-        # body := message(
-        #     fname := getSlot(call message name)
-        # )
     )
 )

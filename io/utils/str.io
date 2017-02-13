@@ -7,6 +7,20 @@ Directory asString := method("<Dir: '" .. self name .. "'>")
 
 Sequence require := method(call sender doFile(self))
 
+PRE := Sequence clone do(
+    with := method(aString,
+        cln := self clone
+        cln copy(aString)
+        cln
+    )
+
+    dedent := method(
+        self
+    )
+)
+
+PRE : := PRE getSlot("with")
+
 
 Sequence beginsWithAnyOf := method(
     str := self
@@ -27,6 +41,7 @@ Sequence dedent := method(
     lines := self split("\n")
     if(lines size == 0, return "")
     if(lines size == 1, return self)
+
     firstLine := lines first
     lines := lines slice(1)
     indent := "^ +" asRegex matchesIn(lines at(0)) at(0) sizeInChars
@@ -34,27 +49,41 @@ Sequence dedent := method(
     if(firstLine size > 0,
         lines prepend(firstLine stripped)
     )
-    lines join(" ")
+    lines1 := []
+    for(i, 0, lines size - 1,
+        if(lines at(i) ?size == 0,
+            lines1 append("\n")
+        ,
+            lines1 append(lines at(i))
+        )
+
+    )
+
+    lines1 join(" ") stripped asMutable replaceSeq("\n ", "\n") asString
 )
 
 Sequence wrap := method(lineLength,
-    words := self split
-    lines := list()
-    curLine := "" asMutable
-    curLen := 0
-    words foreach(w,
-        if(curLen + w size > lineLength,
-            lines append(curLine asString)
-            curLen := 0
-            curLine zero
+    lineLength ifNil(return self)
+    out := []
+    self split("\n") foreach(line,
+        words := line split
+        lines := list()
+        curLine := "" asMutable
+        curLen := 0
+        words foreach(w,
+            if(curLen + w size > lineLength,
+                lines append(curLine asString)
+                curLen := 0
+                curLine zero
+            )
+            curLen := curLen + w size
+            curLine appendSeq(" " .. w)
         )
-        curLen := curLen + w size
-        curLine appendSeq(" " .. w)
+        if(curLine size > 0,
+            lines append(curLine stripped))
+        out append(lines join("\n"))
     )
-    if(curLine size > 0,
-        lines append(curLine))
-    lines join("\n")
-    self
+    out join("\n")
 )
 
 Sequence stripped := method(

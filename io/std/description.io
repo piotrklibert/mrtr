@@ -11,9 +11,28 @@ Sequence asDescription := method(
     Description withString(self)
 )
 
+
+# @doc
+# A Description objects are intermediaries between raw text strings and their
+# display.
+#
+# To work, Description needs three things: a list of slot names, an object which
+# provides some values under these slots (a source), and an object which wants
+# to see the description (a target, almost always an instance of Player).
+#
+# Description takes care of formatting the output according to options provided
+# by the player object.
+#
+# Example:
+#
+# obj := Object clone do(something := "Some text")
+# Description withSections(["something"]) forObject(obj) forPlayer(Object clone)
+#
+# @end
 Description := Object clone do(
-    defattr(chunks, Map clone)
     defattr(order, list())
+    defattr(chunks, Map clone)
+
     defattr(object, nil)
     defattr(player, nil)
 
@@ -24,7 +43,7 @@ Description := Object clone do(
         self order foreach(x,
             desc := self object perform(self chunks at(x), self player, self)
             if(desc,
-                res append(if(width, desc wrap(width), desc))
+                res append(desc wrap(width))
             ,
                 debugWriteln($"Chunk '#{x}' of #{self object} returned nil or false.")
             )
@@ -44,6 +63,12 @@ Description := Object clone do(
                 self object doMessage(msg, thisContext)
             )
         )
+    )
+
+    withSections := method(sections,
+        cln := self clone
+        sections foreach(s, cln addSection(s))
+        cln
     )
 
     withString := method(aString,
@@ -70,6 +95,4 @@ Description := Object clone do(
         c setObject(obj)
         c
     )
-
-
 )

@@ -1,4 +1,6 @@
 OperatorTable addOperator("$", 13)
+OperatorTable addOperator(":", 13)
+
 Object $ := method(
     int := "interpolate" asMessage
     call evalArgs map(str,

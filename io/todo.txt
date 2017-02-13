@@ -1,12 +1,12 @@
 BACKEND:
+- przym. przym. rzecz. -- 50%
+- lepsze parsowanie komend
+- notka na bloga - in progress (02.01:8h; )
 - docstringi
 - save/load obiektow graczy
-- shortName: przym. przym. rzecz.
 - odmiany - plec, przypadki, https://pl.wiktionary.org/wiki/zielony
-- notka na bloga
 - uporzadkowac repo
 - opcje: krotkie +/-; szerokosc
-- lepsze parsowanie komend
 - uprawnienia
 - network connectivity - custom protocol
 - autoreloading
@@ -19,7 +19,7 @@ BACKEND:
 - lepszy Registry instancji - done
 - komenda help - done
 - zbudowac customowa wersje Io (pamietac o SecureSocket: cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/openssl/ -DCMAKE_INSTALL_PREFIX=~/iovm/ ..>out) - done
-- w nazwach klas pelne sciezki do plikow - done (jako classFile i className)
+- w nazwach klas pelne sciezki do plikow - done (jako sourceFile i loadName)
 - poruszanie - refactor - done
 - object/description formatting - done
 - wez i odloz - done

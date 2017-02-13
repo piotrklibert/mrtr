@@ -2,7 +2,7 @@ Player := Container inherit
 Player appendProto(CommandSet)
 
 PlayerOptions := Object clone do(
-    width := 70
+    width := nil
 )
 
 Player do(

@@ -1,7 +1,7 @@
 Object getWordData := method(word,
-    cmd := $$("python odmiana.py #{word} > o")
-    if(System system(cmd) != 0, Exception raise("No such word!"))
-    doString("o" asFile contents setEncoding("utf8"))
+    c := SystemCall with("python odmiana.py")
+    c arguments append(word)
+    doString(c run)
 )
 
 Object copySlots := method(other,

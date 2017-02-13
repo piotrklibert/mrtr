@@ -17,7 +17,7 @@ mainHall do(
         Grube, mleczne i lekko przezroczyste. plastikowe zaslony okalaja
         centralna czesc pomieszczenia i uniemozliwiaja latwe zajrzenie do
         srodka.
-    " dedent)
+    ")
     addItem(["drzwi", "wyjscia", "wyjscie"], "TODO")
     addItem(["korytarz"], "TODO")
 

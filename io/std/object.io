@@ -1,6 +1,8 @@
 WorldObject := Object clone
 
 WorldObject do(
+    # See https://github.com/sirdude/gurbalib/blob/master/lib/std/object.c for
+    # LPC version of root object od a mudlib.
     defattr(registry, Registry on(yourself))
 
     defattr(out, StdOut)
@@ -9,6 +11,23 @@ WorldObject do(
     defattr(env, nil)
     defattr(comingFrom, nil)
     defattr(goingTo, nil)
+
+    isInTransit := method(comingFrom or goingTo)
+
+    defattr(nounList, list())
+    defattr(adjList, list())
+
+    noun    := method(self nounList first)
+    isNoun  := method(noun, self nounList detect(== noun))
+    addNoun := method(noun, self nounList append(noun))
+
+    adj     := method(self adjList first)
+    isAdj   := method(adj, self adjList detect(== adj))
+    addAdj  := method(adj, self adjList append(adj))
+    addAdjs := method(adjs, self adjList appendSeq(adjs))
+
+    addNoun("kula")
+    addAdjs(["pulsujaca", "lewitujaca"])
 
     # set by the Namespace loader
     defattr(isClass, nil)
@@ -19,7 +38,7 @@ WorldObject do(
 
     _long  := nil
     long := method(_long)
-    setLong := method(val, self _long := val dedentIfNeeded)
+    setLong := method(val, self _long := val dedent)
 
     _short := nil
     short := method(_short)
@@ -49,7 +68,7 @@ WorldObject do(
                 self getSlot("name"),
                 self getSlot("short"),
                 self getSlot("uniqueId")
-            ] select(asBoolean) first
+            ] detect(asBoolean)
         )
         $"<#{self type}: '#{desc}'>"
     )

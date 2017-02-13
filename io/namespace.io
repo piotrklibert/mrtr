@@ -1,5 +1,10 @@
+
 WrappedFile := Object clone do(
     currentChecksum := method(self file sha1String)
+
+    forward := method(
+        self file doMessage(call message)
+    )
 
     with := method(aFile, aSlotList,
         wfile := WrappedFile clone
@@ -12,12 +17,13 @@ WrappedFile := Object clone do(
 
 Namespace := Object clone
 Namespace do(
+    debugOn()
     loadedFiles ::= list()
     currentlyLoadingFile ::= nil
 
-    ensureLoaded := method(file,
-        self loadedFiles map(file relPath) detect(== file) ifNil(
-            self loadFile(file)
+    ensureLoaded := method(path,
+        self loadedFiles map(file relPath) detect(== path) ifNil(
+            self loadFile(path)
         )
     )
 
@@ -44,25 +50,15 @@ Namespace do(
         loadedObj
     )
 
+    doLoad := method(
+        diff := self getDiff()
 
+        diff new     foreach(attrName, loadNew(attrName))
+        diff updated foreach(attrName, loadUpdate(attrName))
 
-    getDiff := method(
-        lobbyNames := Lobby slotNames
-        newNames := self slotNames select(in(lobbyNames) not)
-        updatedNames := self slotNames select(in(lobbyNames))
-        Map with(
-            "new", newNames remove("FILE"),
-            "updated", updatedNames remove("FILE"),
-            "isEmpty", (newNames size + updatedNames size > 0) not
-        ) asObject
+        self removeAllSlots()
+        Lobby getSlot(diff new first ifNilEval(diff updated first))
     )
-
-    setNamespaceData := method(name, object,
-        object ?setSourceFile(currentlyLoadingFile)
-        object ?setLoadName(name)
-        object ?setIsClass(name at(0) isUppercase)
-    )
-
 
     loadNew := method(attrName,
         debugWriteln("+#{attrName}" interpolate)
@@ -86,12 +82,20 @@ Namespace do(
         WorldObject registry cleanUp
     )
 
-    doLoad := method(
-        diff := self getDiff
-        diff new     foreach(attrName, loadNew(attrName))
-        diff updated foreach(attrName, loadUpdate(attrName))
+    getDiff := method(
+        lobbyNames := Lobby slotNames
+        newNames := self slotNames select(in(lobbyNames) not)
+        updatedNames := self slotNames select(in(lobbyNames))
+        Object clone lexicalDo(
+            new     := newNames remove("FILE")
+            updated := updatedNames remove("FILE")
+            isEmpty := (newNames size + updatedNames size > 0) not
+        )
+    )
 
-        Lobby getSlot(diff new first ifNilEval(diff updated first))
-        self removeAllSlots()
+    setNamespaceData := method(name, object,
+        object ?setSourceFile(currentlyLoadingFile)
+        object ?setLoadName(name)
+        object ?setIsClass(name at(0) isUppercase)
     )
 )
