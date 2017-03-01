@@ -1,7 +1,7 @@
 BACKEND:
 - przym. przym. rzecz. -- 50%
 - lepsze parsowanie komend
-- notka na bloga - in progress (02.01:8h; )
+- notka na bloga - in progress (02.01:8h; "Call for Io language revival")
 - docstringi
 - save/load obiektow graczy
 - odmiany - plec, przypadki, https://pl.wiktionary.org/wiki/zielony
@@ -14,6 +14,9 @@ BACKEND:
 - git integration
 - potencjal dla makr
 - better booleans
+- zmodyfikowac Io:
+  unpacking przy przypisywaniu
+  a := (b, c) support
 
 - events - fix memory leak in rooms - done
 - lepszy Registry instancji - done

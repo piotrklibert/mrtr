@@ -114,7 +114,64 @@ List fmt := method(
     els := self slice(1)
     s := self at(0) asString asMutable
     els foreach(el,
-        s appendSeq(", " .. el)
+        s appendSeq(call evalArgAt(0) whenNil(", ") .. el)
     )
     s asString
+)
+
+Sequence rfind := method(str, idx,
+    idx ifNil(idx := self size - 1)
+    if(str isKindOf(Number), str := str asCharacter)
+    if(idx >= self size, Exception raise("Argument out of bounds."))
+    loop(
+        if(self exSlice(idx) beginsWithSeq(str),
+            return idx)
+        if(idx <= 0,
+            return nil)
+        idx := idx - 1
+    )
+)
+
+
+_col := method(loc, s,
+    # Returns current column within a string, counting newlines as line separators.
+    # The first column is number 1.
+    len := s size
+    nl := "\n" at(0)
+    if((loc < 0) or (loc >= len), Exception raise("Index out of bounds."))
+    if(s at(loc) == nl, return 0)
+
+    if(loc >= 1 and s at(loc - 1) == nl,
+        1
+    ,
+        pos := s rfind(nl, loc)
+        if(pos not,
+            loc + 1
+        ,
+            loc - pos
+        )
+    )
+)
+
+_lineno := method(loc, s,
+    # Returns current line number within a string, counting newlines as line separators.
+    # The first line is number 1.
+    line := 1
+    s foreach(i, c,
+        if(i == loc, return line)
+        if(c asCharacter == "\n", line := line + 1)
+    )
+    nil
+)
+
+_line := method(loc, strg,
+    # Returns the line of text containing loc within a string, counting newlines
+    # as line separators.
+    lastCR := strg.rfind("\n", loc) ifNilEval(-1)
+    nextCR := strg.find("\n", loc)
+    if(nextCR >= 0,
+        return strg exSlice(lastCR+1, nextCR)
+    ,
+        strg exSlice(lastCR+1)
+    )
 )
