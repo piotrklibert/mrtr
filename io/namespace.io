@@ -17,7 +17,7 @@ WrappedFile := Object clone do(
 
 Namespace := Object clone
 Namespace do(
-    debugOn()
+    # debugOn()
     loadedFiles ::= list()
     currentlyLoadingFile ::= nil
 
@@ -31,6 +31,7 @@ Namespace do(
     loadWorldObj := method(file, loadFile(Paths worldDir fileNamed(file)))
 
     loadFile := method(aFile,
+        "Loading #{aFile}" interpolate println
         loadedObj := nil
         file := aFile asFile
         ns := if(self == Namespace, Namespace clone, self)

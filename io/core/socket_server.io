@@ -21,7 +21,7 @@ BaseConnectionHandler := Object clone do(
     )
 
     checkMsg := method(msg,
-        (msg at(0) == 4) ifTrueEval(Quit raise("EOF"))
+        (msg at(0) == 4) ifTrue(Quit raise("EOF"))
     )
 
     doLine := method(msg,

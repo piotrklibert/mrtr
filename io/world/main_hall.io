@@ -28,7 +28,7 @@ mainHall do(
 
     addAction(["spojrz za zaslone", "zerknij za zaslone", "spojrz za placht"], [
         "Bez wiekszego trudu udaje ci sie odchylic jedna z placht, spogladajac do srodka. Widzisz: TODO",
-        "#{actor name} odchyla jedna z plach i zaglada za nia."
+        "#{actor name} odchyla jedna z placht i zaglada za nia."
     ])
 
 

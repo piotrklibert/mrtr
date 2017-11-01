@@ -8,8 +8,9 @@ RoomExit := Object clone do(
 
     leadsTo := method(where,
         if(self destination isKindOf(Sequence),
-            self destination == where,
-            self destination sourceFile relPath == where
+            self destination == where
+        ,
+            self destination sourceFile worldRelPath == where
         )
     )
 

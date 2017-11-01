@@ -1,7 +1,6 @@
 BaseWriter := Object clone do(
     defattr(file, nil)
 
-
     colorWrite := method(
         args := call evalArgs
         color := args at(0)

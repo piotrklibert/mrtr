@@ -19,11 +19,19 @@ Container := WorldObject inherit do(
     )
 
     notifyInvEnter = method(what, from,
-        self inventory select(!= what) foreach(notifyEnvEnter(what, from))
+        self inventory select(!= what) foreach(obj,
+            try(
+                obj notifyEnvEnter(what, from)
+            )
+        )
     )
 
     notifyInvLeave = method(what, to,
-         self inventory foreach(notifyEnvLeave(what, to))
+         self inventory foreach(obj,
+            try(
+                obj notifyEnvLeave(what, to)
+            )
+        )
     )
 
     notifyLoaded := method(prevObj,

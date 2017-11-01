@@ -49,7 +49,8 @@ Sequence dedent := method(
     if(firstLine size > 0,
         lines prepend(firstLine stripped)
     )
-    lines1 := []
+
+    lines1 := list()
     for(i, 0, lines size - 1,
         if(lines at(i) ?size == 0,
             lines1 append("\n")

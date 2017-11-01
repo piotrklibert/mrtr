@@ -2,7 +2,7 @@ WorldObject := Object clone
 
 WorldObject do(
     # See https://github.com/sirdude/gurbalib/blob/master/lib/std/object.c for
-    # LPC version of root object od a mudlib.
+    # LPC version of root object of a mudlib.
     defattr(registry, Registry on(yourself))
 
     defattr(out, StdOut)

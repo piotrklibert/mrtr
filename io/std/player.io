@@ -34,18 +34,21 @@ Player do(
 
     notifyEnvEnter := method(what, from,
         what := what name
-        where := self env getExitTo(from ?sourceFile worldRelPath) ?dir
+        where := self env getExitTo(from ?sourceFile worldRelPath) ?direction
+
         if(where,
-            self show($$(self env enterDesc)),
+            self show($$(self env enterDesc))
+        ,
             self show($"#{what} pojawia sie w klebach dymu.")
         )
     )
 
     notifyEnvLeave := method(what, to,
         what := what name
-        where := self env getExitTo(to ?sourceFile worldRelPath) ?dir
+        where := self env getExitTo(to ?sourceFile worldRelPath) ?direction
         if(where,
-            self show($$(self env leaveDesc)),
+            self show($$(self env leaveDesc))
+        ,
             self show($"#{what} znika w klebach dymu.")
         )
     )
@@ -70,7 +73,7 @@ Player do(
     )
 
     destroy := method(
-        Paths currentDir fileNamed(self name) setContents(self env sourceFile relPath)
+        # Paths currentDir fileNamed(self name) setContents(self env sourceFile relPath)
         resend
     )
 

@@ -1,30 +1,38 @@
 foo := Object clone
 foo do(
-    defattr(attr, "ok")
+    defattr(attr, "init")
+    defattr(attr2, "", dedent)
+    defattr(a3, "", block(x, "q" .. x .. "q"))
 )
+s := "
+    d
+"
+
+
+assert(foo a3 == "")
+foo setA3(s dedent)
+assert(foo a3 == "qdq")
+
+
+assert(foo attr2 == "")
+foo setAttr2(s)
+assert(foo attr2 == s dedent)
+
+
 foo2 := foo clone
-foo2 attr
+assert(foo hasLocalSlot("_attr") not)
+assert(foo2 hasLocalSlot("_attr") not)
 
-assert(foo _attr == nil)
 foo attr
-
-assert(foo attr ==("ok"))
-assert(foo attr == "ok")
+assert(foo attr == "init")
 
 foo setAttr("z")
 assert(foo attr == "z")
+assert(foo2 attr == "init")
 
-assert(foo2 attr == "ok")
 foo2 setAttr("1")
-assert(foo2 attr == "1")
 assert(foo attr == "z")
+assert(foo2 attr == "1")
 
-a := WorldObject clone
-b := WorldObject clone
-
-assert(a env == nil)
-
-a setEnv("ok")
-assert(a env == "ok")
 removeSlot("foo")
 removeSlot("foo2")

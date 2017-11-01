@@ -106,12 +106,11 @@ Room do(
             ex := try(
                 fname := "world/" .. file
                 Namespace ensureLoaded(fname)
-                room := Room registry cleanUp map(link) \
-                    detect(sourceFile relPath == fname)
-
+                rooms := Room registry cleanUp map(link)
+                room := rooms detect(sourceFile relPath == fname)
+                currentExit destination := room
                 actor moveTo(room)
                 actor show(room desc forPlayer(actor))
-                currentExit destination := room
             )
             ex catch(
                 actor show(ex coroutine backTraceString)

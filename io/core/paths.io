@@ -3,7 +3,7 @@ Directory walk := method(
     call delegateToMethod(
         items select(item, item name != "." and item name !=".."), "map"
     )
-    # .. and then recursively walk all subdirectories, if there is any.
+    # .. and then recursively walk all subdirectories, if there are any.
     if(directories size > 0,
         yield
         directories map(dir, call delegateTo(dir))
