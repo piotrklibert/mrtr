@@ -1,6 +1,11 @@
 OperatorTable addOperator("$", 13)
 OperatorTable addOperator(":", 13)
-OperatorTable addOperator("<-", 0)
+OperatorTable addOperator("to", 13)
+OperatorTable addOperator("apropos", 13)
+OperatorTable addOperator("->", 13)
+
+Object -> := method(b, list(self, b))
+
 
 Object $ := method(
     int := "interpolate" asMessage
@@ -44,6 +49,17 @@ Object whenNotNil := method(
     res
 )
 
+# TODO: make exception handling closer to Smalltalk?
+Object try2 := method(
+    coro := Coroutine clone
+    coro setParentCoroutine(Scheduler currentCoroutine)
+    coro setRunTarget(call sender)
+    coro setRunLocals(call sender)
+    coro setRunMessage(call argAt(0))
+    coro run
+    if(coro exception, coro exception, coro result)
+)
+
 Object whenTrue := method(
     if(self asBoolean,
         ctx := call sender
@@ -78,10 +94,19 @@ List firstOr := method(
 )
 
 
-Object <- := method(
-    # TODO: make it possible for left arg to assignement to be passed unevaled
-
+Object destructure := method(
+  # target [a, b] <- list(9,8) becomes: target a := 9; target b := 8
+  msg := call argAt(0)
+  lst := call evalArgAt(1)
+  target := call target
+  msg arguments foreach(i, x,
+      target setSlot(x name, lst at(i))
+  )
+  target
 )
+# inform the parser about our new operator
+OperatorTable addAssignOperator("<-", "destructure")
+
 
 Map asString := method(
     if(self size == 0, return "{}")
@@ -90,25 +115,11 @@ Map asString := method(
     (s .. "}") asString
 )
 
-Sequence squareBrackets := method(arg,
-    if(arg isKindOf(List),
-        return self exSlice(arg first, arg last)
-    )
-    self perform("at", arg) asCharacter
-)
 
 Number .. := method(other,
     [self, other]
 )
 
-Map squareBrackets := method(
-    argsCount := call message arguments size
-    if(argsCount == 2,
-        self at(call evalArgAt(0)) ifNilEval(call evalArgAt(1))
-    ,
-        call delegateToMethod(self, "atPut")
-    )
-)
 Sequence asChar := method(self at(0))
 
 
@@ -120,6 +131,7 @@ Object curlyBrackets := method(
     dict removeSlot("setSlot")
     dict
 )
+
 Sequence %% := method(
     args := call evalArgs
     res := ""
@@ -132,6 +144,7 @@ Sequence %% := method(
     res
 )
 Sequence % := Sequence getSlot("%%")
+
 Object isInstance := method(
     arg := call evalArgAt(0)
     types := if(arg isKindOf(List), arg, call evalArgs)

@@ -15,26 +15,29 @@ Object do(
     )
 
     inspect := method(
-        Colors fg("red") writeln(self id)
+        out := (Player currentPlayer ?out) whenNil(StdOut)
+        colors := Colors with(out)
+        colors fg("red") writeln(self id)
         self slotNames sort foreach(slot,
             meth := false
             slot := slot asString
             slotVal := method(self getSlot(slot))
             if(self getSlot(slot) type == "Block",
                 meth := true
-                Colors fg("green") write("method ")
+                colors fg("green") write("method ")
             )
 
-            Colors fg("yellow") write(slot .. ": ")
+            colors fg("yellow") write(slot .. ": ")
             if(slotVal == self,
-                writeln("<ref to self>")
+                out writeln("<ref to self>")
                 continue
             )
-            writeln(self getSlot(slot) asString)
+            out writeln(self getSlot(slot) asString)
             if(meth,
-                "------------" println
+                out writeln("------------")
             )
             nil
         )
+        nil
     )
 )

@@ -2,10 +2,21 @@ Player := Container inherit
 Player appendProto(CommandSet)
 
 PlayerOptions := Object clone do(
-    width := nil
+    width := 60
 )
 
 Player do(
+    _players := []
+    currentPlayer := method(
+        coros := []
+        coro := Coroutine currentCoroutine
+        coros append(coro)
+        while(coro parentCoroutine,
+            coro := coro parentCoroutine
+            coros append(coro)
+        )
+        _players select(first in(coros)) first ?last
+    )
     defattr(options, PlayerOptions clone)
     defattr(evalContext, nil)
     defattr(commandHandler, nil)
@@ -143,9 +154,14 @@ Player do(
     defcmd(loadObj, beginsWithSeq("load"),
         arg := line split at(1)
         arg := Paths currentDir fileNamed(arg) path
-        Namespace loadFile(arg)
-        actor show($"Ladowanie pliku '#{arg}'.") showOthers(
-            $"#{actor name} mruczy cos pod nosem i nagle zdajesz sobie sprawe, ze cos sie zmienilo w '#{arg}'."
+        if(Namespace loadFile(arg),
+            actor show($"Zaladowano plik: '#{arg}'.") showOthers(
+                $"#{actor name} mruczy cos pod nosem i nagle zdajesz sobie sprawe, ze cos sie zmienilo w '#{arg}'."
+            )
+        ,
+            actor show($"Ladowanie pliku '#{arg}' sie nie powiodlo.") showOthers(
+                $"#{actor name} mruczy cos pod nosem, lecz nic sie nie dzieje."
+            )
         )
     )
 
@@ -192,7 +208,8 @@ Player do(
         l appendSeq(actor getCmdList)
         l foreach(x, actor show(x at(0)))
     )
-    defcmd(bang, beginsWithSeq("!"),
+
+    defcmd(bang, beginsWithAnyOf(["!", "`"]),
         self evalContext ifNil(
             self setEvalContext(thisContext clone)
         )
@@ -200,7 +217,7 @@ Player do(
             ctx := self evalContext
             ctx p := actor
             ctx here := actor env
-            res := ctx doString(line asMutable removePrefix("!"))
+            res := ctx doString(line asMutable trimLeading("!", "`"))
             ctx removeSlot("here")
             ctx removeSlot("p")
             actor out writeln(res)
@@ -210,7 +227,7 @@ Player do(
 
     defcmd(tmp, ==("tmp"),
         # r := Room registry at(-2) link
-        Collector allObjects  foreach(obj,
+        Collector allObjects foreach(obj,
             getSlot("obj") isActivatable print
             getSlot("obj") uniqueId println
             found := nil

@@ -1,49 +1,55 @@
-Sequence quoted := method(
-    q := 34 asCharacter
-    (q .. self .. q)
-)
-Message sep := method(Message clone setName(";"))
+Object doFile("tmp2.io")
 
-Message joinMessages := method(
-    args := call evalArgs
-    arg0 := args at(0)
+# message([a, *b] <-(1, 3)) println
+"###################################" println
+doString("[b, a] <- list(1, 3)")
+a println
+# Sequence quoted := method(
+#     q := 34 asCharacter
+#     (q .. self .. q)
+# )
+# Message sep := method(Message clone setName(";"))
 
-    args slice(1) foreach(arg,
-        arg0 last setNext(Message sep)
-        arg0 last setNext(arg)
-    )
+# Message joinMessages := method(
+#     args := call evalArgs
+#     arg0 := args at(0)
 
-    arg0
-)
+#     args slice(1) foreach(arg,
+#         arg0 last setNext(Message sep)
+#         arg0 last setNext(arg)
+#     )
+
+#     arg0
+# )
 
 
-Object defattr := method(/*aName, initialValue, attrSlot*/
-    baseName := call argAt(0) name
-    setterName := "set" .. baseName asMutable capitalize
-    attrName := (call argAt(2) ?name) ifNilEval("_" .. baseName)
-    initVal := call evalArgAt(1)
+# Object defattr := method(/*aName, initialValue, attrSlot*/
+#     baseName := call argAt(0) name
+#     setterName := "set" .. baseName asMutable capitalize
+#     attrName := (call argAt(2) ?name) ifNilEval("_" .. baseName)
+#     initVal := call evalArgAt(1)
 
-    getter := block(
-        attrName := call target getSlot(call message name) attrName
-        self perform(attrName)
-    )
-    getter attrName := attrName
+#     getter := block(
+#         attrName := call target getSlot(call message name) attrName
+#         self perform(attrName)
+#     )
+#     getter attrName := attrName
 
-    setter := block(val,
-        attrName := call target getSlot(call message name) attrName
-        self setSlot(attrName, val)
-    ) setScope(nil)
-    setter attrName := attrName
-    call target lexicalDo(
-        setSlot(attrName, initVal)
-        setSlot(baseName, getter setIsActivatable(true))
-        setSlot(setterName, setter setIsActivatable(true))
-    )
-)
+#     setter := block(val,
+#         attrName := call target getSlot(call message name) attrName
+#         self setSlot(attrName, val)
+#     ) setScope(nil)
+#     setter attrName := attrName
+#     call target lexicalDo(
+#         setSlot(attrName, initVal)
+#         setSlot(baseName, getter setIsActivatable(true))
+#         setSlot(setterName, setter setIsActivatable(true))
+#     )
+# )
 
-x := Object clone do(
-    defattr(a, nil)
-)
+# x := Object clone do(
+#     defattr(a, nil)
+# )
 
 
 
@@ -78,28 +84,28 @@ x := Object clone do(
 #     rows foreach(join(" ") println)
 
 # )
-Messages := Object clone
-Messages do (
-    _connections := nil
-    connections := method(self _connections ifNilEval(setConnections(list)))
-    setConnections := method(v, self _connections := v)
+# Messages := Object clone
+# Messages do (
+#     _connections := nil
+#     connections := method(self _connections ifNilEval(setConnections(list)))
+#     setConnections := method(v, self _connections := v)
 
-    _messages := nil
-    messages := method(self _messages ifNilEval(setMessages(Map clone)))
-    setMessages := method(v, self _messages := v)
+#     _messages := nil
+#     messages := method(self _messages ifNilEval(setMessages(Map clone)))
+#     setMessages := method(v, self _messages := v)
 
-    add := method(k,v,
-        self connections foreach(conn,
-            if(conn != k, conn write(k uniqueId .. " says: " .. v))
-        )
-        self messages atPut(k uniqueId, v)
-    )
+#     add := method(k,v,
+#         self connections foreach(conn,
+#             if(conn != k, conn write(k uniqueId .. " says: " .. v))
+#         )
+#         self messages atPut(k uniqueId, v)
+#     )
 
-    addConn := method(conn,
-        conns := self connections ifNilEval(
-            self connections := list()
-            connections
-        )
-        conns append(conn)
-    )
-)
+#     addConn := method(conn,
+#         conns := self connections ifNilEval(
+#             self connections := list()
+#             connections
+#         )
+#         conns append(conn)
+#     )
+# )

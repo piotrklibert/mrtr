@@ -1,4 +1,3 @@
-
 ObjectDetail := Object clone do(
     with := method(name, desc,
         cln := self clone
@@ -7,8 +6,11 @@ ObjectDetail := Object clone do(
         cln
     )
     asString := method(
+        (self == ObjectDetail) ifTrue(
+            return "<ObjectDetail: name='' desc=''>"
+        )
         name := self name first
-        desc := self desc slice(0, 35)
+        desc := self desc exSlice(0, 35)
         dots := if(self desc size > 35, "...", "")
         "<ObjectDetail: name='#{name}', desc='#{desc}#{dots}'>" interpolate
     )

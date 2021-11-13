@@ -1,4 +1,4 @@
-Object defattr := method(/*aName, initializationMsg, setterKey */
+Object defattr := method(/* aName, initializationMsg, setterKey */
     # Assume aName == "attrib", then:
     #
     #    baseName   == "attrib"
@@ -11,7 +11,7 @@ Object defattr := method(/*aName, initializationMsg, setterKey */
 
     baseName   := call argAt(0) name
     setterName := "set" .. baseName asMutable capitalize
-    attrName   :="_" .. baseName
+    attrName   := "_" .. baseName
     initMsg    := call argAt(1)
     setterKey  := call argAt(2)
     if(setterKey ?name == "block",

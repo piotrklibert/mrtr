@@ -54,12 +54,12 @@ Room do(
     )
 
 
-    asString := method($"<Room: '#{self sourceFile ?relPath}'>")
+    asString := method($"<Room: '#{self sourceFile ?relPath}'@#{self uniqueId}>")
 
     getExitTo := method(exitTo, self exits detect(leadsTo(exitTo)))
 
     destroy := method(
-        debugWriteln($"Room: destroying instance: ${self sourceFile relPath}")
+        debugWriteln($"Room: destroying instance: #{self sourceFile relPath}")
         self setEventRunner(nil)
         resend
     )
@@ -88,13 +88,25 @@ Room do(
         name := predData at(0) asMutable replaceSeq(" ", "_") asString
         pred := block(line, line beginsWithAnyOf(predData))
 
-        action := block(line, actor,
-            actor show($$(descriptions at(0)))
-            if(descriptions size > 1,
-                actor showOthers($$(descriptions at(1)))
+        if(descriptions isKindOf(Block),
+            action := descriptions
+        ,
+            action := block(line, actor,
+                actor show($$(descriptions at(0)))
+                if(descriptions size > 1,
+                    actor showOthers($$(descriptions at(1)))
+                )
             )
         )
+
         call sender defcommand(name, pred, action)
+    )
+
+    notifyWillUnload := method(newObj,
+        Room registry map(link)  foreach(
+            exits map(destination) println
+        )
+        self destroy
     )
 
     addExit := method(dir, file,
@@ -108,9 +120,11 @@ Room do(
                 Namespace ensureLoaded(fname)
                 rooms := Room registry cleanUp map(link)
                 room := rooms detect(sourceFile relPath == fname)
-                currentExit destination := room
-                actor moveTo(room)
-                actor show(room desc forPlayer(actor))
+                if(room isNil not,
+                    currentExit destination := room
+                    actor moveTo(room)
+                    actor show(room desc forPlayer(actor))
+                )
             )
             ex catch(
                 actor show(ex coroutine backTraceString)

@@ -38,17 +38,25 @@ Description := Object clone do(
 
 
     asString := method(
-        width := self player ?options width
         res := []
-        self order foreach(x,
-            desc := self object perform(self chunks at(x), self player, self)
-            if(desc,
-                res append(desc wrap(width))
-            ,
-                debugWriteln($"Chunk '#{x}' of #{self object} returned nil or false.")
+        ex := try(
+            width := self player ?options width
+            self order foreach(x,
+                desc := self object perform(self chunks at(x), self player, self)
+                if(desc,
+                    res append(desc wrap(width))
+                ,
+                    debugWriteln($"Chunk '#{x}' of #{self object} returned nil or false.")
+                )
             )
         )
-        res join("\n")
+        if(ex isNil,
+            res join("\n")
+        ,
+            ex println
+            ex showStack
+            "<Description: formatting failed>"
+        )
     )
 
     addSection := method(name, optionalSelector,

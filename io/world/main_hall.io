@@ -35,6 +35,7 @@ mainHall do(
     addExit("n", "cji/workroom.io")
     addExit("w", "room1.io")
     addExit("s", "office.io")
+    addExit("u", "upstairs.io")
 )
 # Wielki Hol Glowny zostal zbudowany w swojej obecnej formie prawie
 # na pewno wylacznie po to, by zaspokoic czyjas megalomanie. Dluga na

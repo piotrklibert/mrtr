@@ -4,10 +4,10 @@ Regex
 Range
 SHA1
 Random
-
+Thread
 
 Lobby do(
-    # Object debugOn()
+    Object debugOff() # from Socket addon, enables debugWriteln
     # Scheduler currentCoroutine setMessageDebugging(true)
     debugModeEnabled := true
 )
@@ -52,8 +52,10 @@ Namespace loadWorldObj("main_hall.io")
 
 doFile("tests/tests.io")
 
-heartbeat @start
-MTRServer start
+System isLaunchScript() ifTrue(
+    heartbeat @start
+    MTRServer start
+)
 
 
 

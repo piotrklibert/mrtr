@@ -1,4 +1,3 @@
-
 WrappedFile := Object clone do(
     currentChecksum := method(self file sha1String)
 
@@ -6,11 +5,10 @@ WrappedFile := Object clone do(
         self file doMessage(call message)
     )
 
-    with := method(aFile, aSlotList,
+    with := method(aFile,
         wfile := WrappedFile clone
         wfile file := aFile
         wfile checksum := aFile sha1String
-        wfile slots := aSlotList
         wfile
     )
 )
@@ -42,7 +40,8 @@ Namespace do(
             loadedObj := ns doLoad()
         )
         ex catch(
-            writeln("Error evaluating #{file path}: #{ex}" interpolate)
+            "Error evaluating #{file path}" interpolate println
+            ex coroutine backTraceString println
         )
         ex ifNil(
             loadedFiles append(WrappedFile with(file))
@@ -76,7 +75,7 @@ Namespace do(
         oldVal := Lobby getSlot(attrName)
         newVal := self getSlot(attrName)
 
-        oldVal ?notifyWillUnload()
+        oldVal ?notifyWillUnload(newVal)
         newVal ?notifyLoaded(oldVal)
 
         oldVal become(newVal)

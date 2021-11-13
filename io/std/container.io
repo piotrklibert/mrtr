@@ -36,12 +36,16 @@ Container := WorldObject inherit do(
 
     notifyLoaded := method(prevObj,
         resend
-        if(prevObj, prevObj inventory foreach(moveTo(self)))
+        if(prevObj isNil not,
+            prevObj println
+            Coroutine currentCoroutine showStack
+            prevObj inventory foreach(moveTo(self))
+        )
     )
 
 
     add := method(obj,
-        inventory append(obj)
+        inventory ? append(obj)
         self notifyInvEnter(obj, obj comingFrom)
         self
     )
@@ -65,7 +69,7 @@ WorldObject moveTo := method(target,
         self env rm(self)
     )
 
-    target add(self)
+    target ?add(self)
     self setEnv(target)
 
     self setComingFrom(nil)

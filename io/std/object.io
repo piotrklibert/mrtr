@@ -1,5 +1,6 @@
 WorldObject := Object clone
 
+
 WorldObject do(
     # See https://github.com/sirdude/gurbalib/blob/master/lib/std/object.c for
     # LPC version of root object of a mudlib.
@@ -70,7 +71,7 @@ WorldObject do(
                 self getSlot("uniqueId")
             ] detect(asBoolean)
         )
-        $"<#{self type}: '#{desc}'>"
+        $"<#{self type}: '#{desc}'@#{self uniqueId}>"
     )
 
     destroy := method(
@@ -91,7 +92,7 @@ WorldObject do(
 
     notifyLoaded := method(prevObj,
         debugWriteln($"Loading #{self sourceFile relPath}.")
-        if(prevObj,
+        if(prevObj and prevObj ?env,
             self setEnv(prevObj env)
             self setRegistry(prevObj registry)
         )

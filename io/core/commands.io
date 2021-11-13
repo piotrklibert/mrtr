@@ -29,12 +29,13 @@ Commands do(
     )
 
     defcmd(y, ==("objs"),
-        WorldObject registry removeBySel(link not) map(link) foreach(x,
+        WorldObject registry cleanUp map(link) foreach(x,
             if(x registry size > 0,
+
                 actor out lexicalDo(
                     writeln(x type .. ":")
                     write("\t")
-                    writeln(x registry removeBySel(link not) clone map(link asString) fmt)
+                    writeln(x registry map(link asString) fmt)
                 )
             )
         )

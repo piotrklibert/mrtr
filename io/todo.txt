@@ -12,12 +12,11 @@ BACKEND:
 - autoreloading
 
 - git integration
-- potencjal dla makr
+- potencjal dla makr (quote/unquote?)
 - better booleans
-- zmodyfikowac Io:
-  unpacking przy przypisywaniu
-  a := (b, c) support
 
+- zmodyfikowac Io: unpacking przy przypisywaniu - DONE
+  a := (b, c) support
 - events - fix memory leak in rooms - done
 - lepszy Registry instancji - done
 - komenda help - done
@@ -37,3 +36,18 @@ BACKEND:
 FRONTEND:
 - telnet/Mush
 - custom app
+
+list(
+Random,
+Libxml2,
+NotificationCenter,
+Range,
+Thread,
+EditLine,
+HttpClient,
+AsyncRequest,
+Rational,
+Socket,
+Regex,
+SecureSocket,
+ReadLine)

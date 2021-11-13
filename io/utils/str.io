@@ -1,11 +1,24 @@
 Block oldAsString := Block getSlot("asString")
 Block asFullString := Block getSlot("asString")
-Block asString := Block getSlot("asSimpleString")
+# Block asString := Block getSlot("asSimpleString")
 File asString := method("<File: '" .. self name .. "'>")
 Directory asString := method("<Dir: '" .. self name .. "'>")
 
 
 Sequence require := method(call sender doFile(self))
+Sequence trimLeading := method(prefix,
+    str := self asMutable
+
+    if(call argCount == 1 and prefix type in(["ImmutableSequence", "Sequence"]),
+        prefix := [prefix]
+    )
+    if(call argCount > 1,
+        prefix := call evalArgs
+    )
+
+    pre := prefix select(p, str beginsWithSeq(p)) first
+    str removePrefix(pre)
+)
 
 PRE := Sequence clone do(
     with := method(aString,
@@ -77,8 +90,9 @@ Sequence wrap := method(lineLength,
                 curLen := 0
                 curLine zero
             )
+            sep := if(curLen == 0, "", " ")
             curLen := curLen + w size
-            curLine appendSeq(" " .. w)
+            curLine appendSeq(sep .. w)
         )
         if(curLine size > 0,
             lines append(curLine stripped))

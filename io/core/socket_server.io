@@ -75,6 +75,8 @@ ConnectionHandler := BaseConnectionHandler clone do(
         )
         self setPlayerHandler(RemotePlayerHandler with(self socket, name))
         self playerHandler doCommand("sp")
+        Lobby Player _players append([Coroutine currentCoroutine,
+                                      self playerHandler player])
     )
 
     handleLine := method(aLine,
@@ -86,6 +88,7 @@ ConnectionHandler := BaseConnectionHandler clone do(
     )
 
     handleClose := method(
+        Lobby Player _players selectInPlace(last != self playerHandler player)
         self playerHandler destroy
         resend
     )

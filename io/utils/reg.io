@@ -31,7 +31,6 @@ WorldRegistry := Registry clone do(
         )
     )
     cleanUp := method(
-        resend
         self map(link registry) select(!= self) foreach(cleanUp)
         self
     )
