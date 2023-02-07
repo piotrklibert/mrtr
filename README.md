@@ -1,5 +1,11 @@
 # MTR - Multi-user (rich)Text Realms
 
+## Another implementation
+
+After abandoning this attempt, I tried again using GNU Smalltalk: 
+
+https://github.com/piotrklibert/stshell
+
 ## Why do this, whatever it is?
 
 I always wanted to. I didn't have the time to properly research and a lot of my
